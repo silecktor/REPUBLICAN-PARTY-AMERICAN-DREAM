@@ -1,0 +1,617 @@
+/* ========== HERO ========== */
+.candidates-hero {
+    position: relative;
+    min-height: 35vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-top: 73px;
+    background: var(--bg-dark);
+}
+
+.candidates-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse at 50% 80%, rgba(236,134,39,0.06) 0%, transparent 70%),
+        var(--bg-dark);
+    z-index: 0;
+}
+
+.candidates-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.candidates-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.2rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+}
+
+.candidates-hero-line {
+    width: 60px;
+    height: 3px;
+    background: var(--copper);
+    margin: 0 auto 25px;
+}
+
+.candidates-hero-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 400;
+    letter-spacing: 1px;
+    color: var(--white);
+    max-width: 700px;
+    margin: 0 auto 15px;
+    line-height: 1.5;
+}
+
+/* Счётчик кандидатов */
+.candidates-hero-counter {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 10px;
+    padding: 8px 24px;
+    border: 1px solid rgba(212,175,55,0.3);
+    border-radius: 2px;
+    background: rgba(212,175,55,0.05);
+}
+
+.candidates-hero-counter .counter-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--copper);
+    line-height: 1;
+    transform: translateY(-7.5px);    
+    display: inline-block;          
+}
+
+.candidates-hero-counter .counter-label {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-gray);
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.candidates-hero-note {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 300;
+    color: var(--text-gray);
+    max-width: 550px;
+    margin: 0 auto;
+    margin-top: 18px;
+    font-style: italic;
+}
+
+/* ========== ГУБЕРНАТОР (КРУПНАЯ КАРТОЧКА) ========== */
+.governor-section {
+    padding: 60px 20px;
+    background: var(--bg-dark);
+}
+
+.governor-card {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    align-items: stretch;
+    background: var(--card-bg);
+    border: 1px solid var(--copper);
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 15px 45px rgba(0,0,0,0.35);
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.governor-card:hover {
+    box-shadow: 0 20px 55px rgba(236,134,39,0.15);
+    transform: translateY(-4px);
+}
+
+.governor-photo {
+    width: 320px;
+    flex-shrink: 0;
+    background: var(--bg-dark);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px;
+    border-right: 1px solid rgba(236,134,39,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.governor-photo::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle, rgba(236,134,39,0.08) 0%, transparent 70%);
+}
+
+/* Обёртка для hover-эффекта на фото губернатора */
+.governor-photo-wrapper {
+    position: relative;
+    z-index: 1;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.governor-card:hover .governor-photo-wrapper {
+    transform: scale(1.06);
+}
+
+.governor-photo img {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 4px solid var(--copper);
+    object-fit: cover;
+    display: block;
+    transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.governor-card:hover .governor-photo img {
+    border-color: var(--gold);
+    box-shadow: 0 0 25px rgba(236,134,39,0.3);
+}
+
+.governor-photo .default-avatar {
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 4px solid var(--copper);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(236,134,39,0.08);
+    color: var(--copper);
+    transition: border-color 0.5s ease, box-shadow 0.5s ease;
+}
+
+.governor-card:hover .governor-photo .default-avatar {
+    border-color: var(--gold);
+    box-shadow: 0 0 25px rgba(236,134,39,0.3);
+}
+
+.governor-photo .default-avatar svg {
+    width: 80px;
+    height: 80px;
+    opacity: 0.5;
+}
+
+.governor-info {
+    padding: 45px 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    flex: 1;
+}
+
+.governor-badge {
+    display: inline-block;
+    padding: 6px 18px;
+    border: 1px solid var(--gold);
+    border-radius: 2px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 15px;
+    width: fit-content;
+}
+
+.governor-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+}
+
+.governor-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    font-style: italic;
+    color: var(--copper);
+    margin-bottom: 20px;
+    line-height: 1.5;
+    padding-left: 15px;
+    border-left: 3px solid rgba(236,134,39,0.3);
+}
+
+.governor-bio {
+    font-size: 0.95rem;
+    line-height: 1.7;
+    color: var(--text-gray);
+}
+
+/* ========== МИНИСТЕРСКАЯ СЕТКА ========== */
+.ministers-section {
+    padding: 0 20px 80px;
+    background: var(--bg-dark);
+}
+
+.ministers-heading {
+    text-align: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 50px;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+}
+
+.ministers-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+    justify-content: center;
+}
+
+/* 1 карточка — по центру */
+.ministers-grid.few-items.one-item {
+    grid-template-columns: 1fr;
+    max-width: 400px;
+}
+
+/* 2 карточки — по центру */
+.ministers-grid.few-items.two-items {
+    grid-template-columns: repeat(2, 1fr);
+    max-width: 750px;
+}
+
+/* Карточка министра */
+.minister-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 35px 28px 30px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.minister-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--copper);
+    border-radius: 8px 0 0 8px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.minister-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.3);
+}
+
+.minister-card:hover::before {
+    opacity: 1;
+}
+
+.minister-photo {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--copper);
+    object-fit: cover;
+    margin-bottom: 22px;
+    flex-shrink: 0;
+}
+
+.minister-photo-placeholder {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    border: 3px solid var(--copper);
+    margin-bottom: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(236,134,39,0.06);
+    color: var(--copper);
+    flex-shrink: 0;
+}
+
+.minister-photo-placeholder svg {
+    width: 55px;
+    height: 55px;
+    opacity: 0.5;
+}
+
+/* Иконка должности */
+.minister-role-icon {
+    width: 24px;
+    height: 24px;
+    color: var(--copper);
+    margin-bottom: 6px;
+    opacity: 0.8;
+    transition: color 0.4s ease, transform 0.4s ease;
+}
+
+.minister-card:hover .minister-role-icon {
+    color: var(--gold);
+    transform: scale(1.1);
+}
+
+.minister-role-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.minister-role {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--gold);
+    margin-bottom: 8px;
+}
+
+.minister-name {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+}
+
+.minister-quote {
+    font-family: 'Playfair Display', serif;
+    font-size: 0.95rem;
+    font-style: italic;
+    color: var(--copper);
+    margin-bottom: 15px;
+    line-height: 1.5;
+    opacity: 0.9;
+}
+
+.minister-bio {
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--text-gray);
+    text-align: left;
+}
+
+/* ========== CTA ========== */
+.candidates-cta-section {
+    padding: 0 20px 100px;
+    background: var(--bg-dark);
+}
+
+.candidates-cta-card {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--card-bg);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 6px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.candidates-cta-card:hover {
+    border-color: var(--copper);
+    box-shadow: 0 15px 45px rgba(236,134,39,0.1);
+}
+
+.candidates-cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 15px;
+}
+
+.candidates-cta-text {
+    font-size: 1.05rem;
+    color: var(--text-gray);
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+.candidates-cta-btn {
+    display: inline-block;
+    padding: 16px 48px;
+    border: 2px solid var(--copper);
+    color: var(--white);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 3px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    background: transparent;
+    cursor: pointer;
+}
+
+.candidates-cta-btn:hover {
+    background: var(--copper);
+    border-color: var(--copper);
+    box-shadow: 0 12px 30px rgba(236,134,39,0.25);
+    transform: translateY(-2px);
+}
+
+/* ========== ПУСТОЕ СОСТОЯНИЕ ========== */
+.no-candidates {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-gray);
+}
+
+.no-candidates h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: var(--gold);
+    margin-bottom: 15px;
+}
+
+.no-candidates p {
+    font-size: 1rem;
+    max-width: 500px;
+    margin: 0 auto;
+    line-height: 1.6;
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 1024px) {
+    .ministers-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .ministers-grid.few-items.one-item {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+    
+    .ministers-grid.few-items.two-items {
+        grid-template-columns: repeat(2, 1fr);
+        max-width: 650px;
+    }
+    
+    .governor-card {
+        flex-direction: column;
+        max-width: 600px;
+    }
+    
+    .governor-photo {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid rgba(236,134,39,0.2);
+        padding: 40px 20px 30px;
+    }
+    
+    .governor-photo img,
+    .governor-photo .default-avatar {
+        width: 150px;
+        height: 150px;
+    }
+    
+    .governor-info {
+        padding: 30px 30px;
+    }
+    
+    .governor-name {
+        font-size: 1.6rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .candidates-hero {
+        min-height: 28vh;
+    }
+    
+    .candidates-hero-title {
+        font-size: 2.2rem;
+        letter-spacing: 2px;
+    }
+    
+    .candidates-hero-subtitle {
+        font-size: 1rem;
+    }
+    
+    .candidates-hero-note {
+        font-size: 0.85rem;
+    }
+    
+    .candidates-hero-counter .counter-number {
+        font-size: 1.6rem;
+    }
+    
+    .candidates-hero-counter .counter-label {
+        font-size: 0.75rem;
+    }
+    
+    .ministers-grid {
+        grid-template-columns: 1fr;
+        max-width: 450px;
+    }
+    
+    .ministers-grid.few-items.one-item,
+    .ministers-grid.few-items.two-items {
+        grid-template-columns: 1fr;
+        max-width: 400px;
+    }
+    
+    .ministers-heading {
+        font-size: 1.8rem;
+    }
+    
+    .governor-card {
+        max-width: 100%;
+    }
+    
+    .governor-quote {
+        font-size: 1.05rem;
+    }
+    
+    .governor-bio {
+        font-size: 0.9rem;
+    }
+    
+    .candidates-cta-card {
+        padding: 40px 24px;
+    }
+    
+    .candidates-cta-title {
+        font-size: 1.6rem;
+    }
+    
+    .candidates-cta-btn {
+        padding: 14px 34px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .candidates-hero-title {
+        font-size: 1.7rem;
+    }
+    
+    .candidates-hero-counter {
+        padding: 6px 18px;
+    }
+    
+    .ministers-heading {
+        font-size: 1.5rem;
+    }
+    
+    .minister-card {
+        padding: 25px 20px;
+    }
+    
+    .governor-info {
+        padding: 25px 20px;
+    }
+    
+    .governor-badge {
+        font-size: 0.7rem;
+        padding: 5px 14px;
+    }
+}
