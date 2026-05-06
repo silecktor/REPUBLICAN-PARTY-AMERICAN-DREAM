@@ -1,0 +1,349 @@
+/* ========== HERO БАННЕР С ПАНОРАМОЙ ========== */
+.program-hero {
+    position: relative;
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-top: 73px;
+    background: var(--bg-dark);
+}
+
+/* Фоновая картинка — панорама Бостона */
+.program-hero-image {
+    position: absolute;
+    inset: 0;
+    background: 
+        url('../../assets/images/boston-skyline.jpg') center/cover no-repeat;
+    z-index: 0;
+    filter: saturate(0.7) brightness(0.55);
+    transform: scale(1.05);
+    transition: transform 8s ease-out, filter 0.5s ease;
+}
+
+/* Лёгкое движение фона при наведении */
+.program-hero:hover .program-hero-image {
+    transform: scale(1.08);
+}
+
+/* Светлая тема — картинка светлее, меньше насыщенности */
+body.light-mode .program-hero-image {
+    filter: saturate(0.5) brightness(0.85);
+}
+
+/* Затемнение поверх картинки */
+.program-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse at 50% 60%, rgba(236,134,39,0.15) 0%, transparent 70%),
+        linear-gradient(to bottom, rgba(15,15,17,0.35) 0%, rgba(15,15,17,0.75) 100%);
+    z-index: 1;
+    transition: background 0.5s ease;
+}
+
+/* Светлая тема — оверлей светлее, сохраняем читаемость текста */
+body.light-mode .program-hero-overlay {
+    background: 
+        radial-gradient(ellipse at 50% 60%, rgba(236,134,39,0.1) 0%, transparent 70%),
+        linear-gradient(to bottom, rgba(248,248,250,0.3) 0%, rgba(248,248,250,0.8) 100%);
+}
+
+/* Плавный переход в фон страницы */
+.program-hero-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 150px;
+    background: linear-gradient(to bottom, transparent, var(--bg-dark));
+    z-index: 1;
+    transition: background 0.5s ease;
+}
+
+.program-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.program-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.8rem;
+    font-weight: 700;
+    letter-spacing: 5px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.5);
+    transition: color 0.5s ease, text-shadow 0.5s ease;
+}
+
+/* Светлая тема — заголовок темнее, тень слабее */
+body.light-mode .program-hero-title {
+    color: #b8860b;
+    text-shadow: 0 2px 15px rgba(0,0,0,0.15);
+}
+
+.program-hero-line {
+    width: 60px;
+    height: 3px;
+    background: var(--copper);
+    margin: 0 auto 25px;
+    box-shadow: 0 0 15px rgba(236,134,39,0.4);
+}
+
+.program-hero-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.85);
+    max-width: 620px;
+    margin: 0 auto;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+    transition: color 0.5s ease, text-shadow 0.5s ease;
+}
+
+/* Светлая тема — подпись темнее */
+body.light-mode .program-hero-subtitle {
+    color: rgba(30,30,30,0.8);
+    text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* ========== СЕТКА ПРОГРАММЫ ========== */
+.program-grid-section {
+    padding: 80px 20px 100px;
+    background: var(--bg-dark);
+}
+
+.program-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 30px;
+}
+
+/* ========== КАРТОЧКА ПРОГРАММЫ ========== */
+.program-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 40px 30px 35px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+    position: relative;
+    overflow: hidden;
+}
+
+.program-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: var(--copper);
+    border-radius: 6px 0 0 6px;
+    opacity: 0;
+    transition: opacity 0.4s ease;
+}
+
+.program-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold);
+    box-shadow: 0 20px 45px rgba(0,0,0,0.35);
+}
+
+.program-card:hover::before {
+    opacity: 1;
+}
+
+/* Иконка */
+.program-card-icon {
+    width: 56px;
+    height: 56px;
+    margin-bottom: 25px;
+    color: var(--copper);
+    transition: transform 0.4s ease, color 0.4s ease;
+}
+
+.program-card:hover .program-card-icon {
+    transform: scale(1.08);
+    color: var(--gold);
+}
+
+.program-card-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+/* Заголовок */
+.program-card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.35rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 18px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+}
+
+/* Список тезисов */
+.program-card-list {
+    list-style: none;
+    padding: 0;
+}
+
+.program-card-list li {
+    position: relative;
+    padding-left: 20px;
+    margin-bottom: 12px;
+    font-size: 0.95rem;
+    line-height: 1.55;
+    color: var(--text-gray);
+}
+
+.program-card-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 7px;
+    height: 7px;
+    background: var(--copper);
+    border-radius: 1px;
+    transform: rotate(45deg);
+    opacity: 0.7;
+}
+
+.program-card-list li:last-child {
+    margin-bottom: 0;
+}
+
+/* ========== CTA СЕКЦИЯ ========== */
+.program-cta-section {
+    padding: 0 20px 100px;
+    background: var(--bg-dark);
+}
+
+.program-cta-card {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--card-bg);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 6px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+}
+
+.program-cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 15px;
+}
+
+.program-cta-text {
+    font-size: 1.05rem;
+    color: var(--text-gray);
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+.program-cta-btn {
+    display: inline-block;
+    padding: 16px 48px;
+    border: 2px solid var(--copper);
+    color: var(--white);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 3px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    background: transparent;
+    cursor: pointer;
+}
+
+.program-cta-btn:hover {
+    background: var(--copper);
+    border-color: var(--copper);
+    box-shadow: 0 12px 30px rgba(236,134,39,0.25);
+    transform: translateY(-2px);
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 1024px) {
+    .program-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 24px;
+    }
+    
+    .program-hero-title {
+        font-size: 3rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .program-hero {
+        min-height: 40vh;
+    }
+    
+    .program-hero-title {
+        font-size: 2.2rem;
+        letter-spacing: 2px;
+    }
+    
+    .program-hero-subtitle {
+        font-size: 0.95rem;
+        letter-spacing: 1px;
+    }
+    
+    .program-grid {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+    
+    .program-card {
+        padding: 30px 24px;
+    }
+    
+    .program-card-title {
+        font-size: 1.2rem;
+    }
+    
+    .program-cta-card {
+        padding: 40px 24px;
+    }
+    
+    .program-cta-title {
+        font-size: 1.6rem;
+    }
+    
+    .program-cta-btn {
+        padding: 14px 34px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .program-hero-title {
+        font-size: 1.7rem;
+    }
+    
+    .program-card-icon {
+        width: 44px;
+        height: 44px;
+    }
+    
+    .program-card-list li {
+        font-size: 0.9rem;
+    }
+}
