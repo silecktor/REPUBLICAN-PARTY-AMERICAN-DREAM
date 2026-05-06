@@ -1,0 +1,766 @@
+/* ========== ТИТУЛЬНАЯ СЕКЦИЯ ========== */
+.charter-hero {
+    position: relative;
+    min-height: 50vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-top: 73px;
+    background: var(--bg-dark);
+}
+
+.charter-hero-watermark {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.04;
+    background-image: url('../../assets/images/logo.png');
+    background-repeat: no-repeat;
+    background-position: center center;
+    background-size: 350px;
+    pointer-events: none;
+}
+
+.charter-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.charter-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 4.5rem;
+    font-weight: 700;
+    letter-spacing: 18px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 25px;
+}
+
+.charter-subtitle {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+.charter-hero-line {
+    width: 80px;
+    height: 2px;
+    background: var(--copper);
+    margin: 0 auto 25px;
+}
+
+.charter-adopted {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 300;
+    color: var(--text-gray);
+    letter-spacing: 1px;
+    margin-bottom: 5px;
+}
+
+.charter-date {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--copper);
+    letter-spacing: 1px;
+}
+
+/* ========== ПАНЕЛЬ УПРАВЛЕНИЯ ========== */
+.charter-controls {
+    padding: 40px 20px 20px;
+    background: var(--bg-dark);
+}
+
+.charter-controls-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(236,134,39,0.15);
+}
+
+.toggle-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    user-select: none;
+    font-family: 'Montserrat', sans-serif;
+}
+
+.toggle-label input {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.toggle-checkmark {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--copper);
+    border-radius: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.toggle-label input:checked + .toggle-checkmark {
+    background: var(--copper);
+}
+
+.toggle-label input:checked + .toggle-checkmark::after {
+    content: '';
+    width: 7px;
+    height: 10px;
+    border: solid var(--white);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg) translateY(-1px);
+}
+
+.toggle-text {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    letter-spacing: 0.5px;
+}
+
+.print-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border: 1px solid var(--copper);
+    border-radius: 3px;
+    background: transparent;
+    color: var(--copper);
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.print-btn svg {
+    width: 18px;
+    height: 18px;
+}
+
+.print-btn:hover {
+    background: var(--copper);
+    color: var(--white);
+}
+
+/* ========== СНОСКА ОБ ИЗМЕНЕНИЯХ ========== */
+.charter-amendment-notice {
+    padding: 0 20px 30px;
+    background: var(--bg-dark);
+}
+
+.amendment-notice-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 18px 22px;
+    border: 1px solid rgba(236,134,39,0.2);
+    border-radius: 4px;
+    background: rgba(236,134,39,0.04);
+}
+
+.amendment-icon {
+    width: 20px;
+    height: 20px;
+    color: var(--copper);
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.amendment-text {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.amendment-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--copper);
+}
+
+.amendment-details {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    line-height: 1.5;
+}
+
+/* ========== ГЛАВЫ (АККОРДЕОН) ========== */
+.charter-chapters {
+    padding: 0 20px 60px;
+    background: var(--bg-dark);
+}
+
+.chapters-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.chapter-block {
+    margin-bottom: 10px;
+    border: 1px solid rgba(255,255,255,0.05);
+    border-radius: 6px;
+    overflow: hidden;
+    transition: border-color 0.3s ease;
+}
+
+.chapter-block:hover {
+    border-color: rgba(236,134,39,0.2);
+}
+
+.chapter-block.open {
+    border-color: rgba(236,134,39,0.3);
+}
+
+.chapter-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 22px 30px;
+    background: var(--card-bg);
+    cursor: pointer;
+    user-select: none;
+    transition: background 0.3s ease;
+    position: relative;
+}
+
+.chapter-header:hover {
+    background: rgba(236,134,39,0.04);
+}
+
+.chapter-header-text {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 2px;
+    text-align: center;
+}
+
+.chapter-arrow {
+    width: 16px;
+    height: 16px;
+    color: var(--copper);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    flex-shrink: 0;
+}
+
+.chapter-block.open .chapter-arrow {
+    transform: rotate(180deg);
+}
+
+.chapter-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.chapter-block.open .chapter-body {
+    max-height: 4000px;
+}
+
+.chapter-body-inner {
+    padding: 10px 40px 35px;
+    background: var(--card-bg);
+}
+
+.article-block {
+    padding: 20px 0 20px 20px;
+    border-left: 2px solid rgba(236,134,39,0.2);
+    margin-bottom: 0;
+    transition: border-color 0.3s ease;
+}
+
+.article-block:last-child {
+    padding-bottom: 0;
+}
+
+.article-block:hover {
+    border-left-color: var(--copper);
+}
+
+.article-header {
+    margin-bottom: 10px;
+}
+
+.article-number {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--copper);
+    margin-right: 5px;
+}
+
+.article-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--copper);
+}
+
+.article-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    line-height: 1.75;
+    color: var(--white);
+    opacity: 0.9;
+}
+
+body.light-mode .article-text {
+    color: var(--white);
+}
+
+/* ========== БЛОК ПОДПИСЕЙ ========== */
+.charter-signatures {
+    padding: 0 20px 60px;
+    background: var(--bg-dark);
+}
+
+.signatures-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 50px 50px 40px;
+    background: var(--card-bg);
+    border: 1px solid rgba(236,134,39,0.15);
+    border-radius: 6px;
+}
+
+.signatures-header {
+    text-align: center;
+    margin-bottom: 45px;
+}
+
+.signatures-header-text {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-gray);
+    line-height: 1.8;
+}
+
+.signatures-header-text strong {
+    color: var(--white);
+    font-weight: 600;
+}
+
+.signatures-approval {
+    margin-top: 12px;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gold);
+    letter-spacing: 1px;
+}
+
+/* Основной блок: печать слева, подписи справа */
+.signatures-main {
+    display: flex;
+    align-items: flex-end;
+    gap: 70px;
+}
+
+/* Колонка с подписями — справа */
+.signatures-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    padding-bottom: 8px;
+}
+
+/* Один блок подписи */
+.signature-block {
+    text-align: right;
+}
+
+.signature-image-wrapper {
+    height: 60px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    margin-bottom: 4px;
+}
+
+.signature-image-wrapper img {
+    max-height: 55px;
+    max-width: 260px;
+    object-fit: contain;
+    opacity: 0.9;
+}
+
+.signature-line {
+    width: 100%;
+    max-width: 350px;
+    height: 1px;
+    background: var(--copper);
+    opacity: 0.5;
+    margin-bottom: 12px;
+    margin-left: auto;
+    margin-right: 0;
+}
+
+.signature-courtesy {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    margin-bottom: 6px;
+    font-style: italic;
+}
+
+.signature-role {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    color: var(--copper);
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    margin-bottom: 4px;
+    font-weight: 600;
+}
+
+.signature-name {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--white);
+}
+
+/* Печать — слева */
+.signatures-seal-column {
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.signature-seal {
+    width: 145px;
+    height: 145px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signature-seal img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.signature-seal span {
+    color: var(--copper);
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    border: 3px solid var(--copper);
+    border-radius: 50%;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signature-seal-label {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.75rem;
+    color: var(--text-gray);
+    text-align: center;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.4;
+}
+
+/* ========== ИСТОРИЯ ИЗМЕНЕНИЙ ========== */
+.charter-history {
+    padding: 0 20px 60px;
+    background: var(--bg-dark);
+}
+
+.history-wrapper {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.history-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: var(--gold);
+    text-align: center;
+    margin-bottom: 30px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+}
+
+.history-list {
+    list-style: none;
+    padding: 0;
+    position: relative;
+}
+
+.history-list::before {
+    content: '';
+    position: absolute;
+    left: 12px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: rgba(236,134,39,0.2);
+}
+
+.history-item {
+    position: relative;
+    padding-left: 40px;
+    padding-bottom: 25px;
+}
+
+.history-item:last-child {
+    padding-bottom: 0;
+}
+
+.history-item::before {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 5px;
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--copper);
+    border-radius: 50%;
+    background: var(--bg-dark);
+    z-index: 1;
+}
+
+.history-item:first-child::before {
+    background: var(--copper);
+}
+
+.history-protocol {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--copper);
+    margin-bottom: 4px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.history-description {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    color: var(--text-gray);
+    line-height: 1.5;
+}
+
+/* ========== CTA ========== */
+.charter-cta-section {
+    padding: 0 20px 100px;
+    background: var(--bg-dark);
+}
+
+.charter-cta-card {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--card-bg);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 6px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.charter-cta-card:hover {
+    border-color: var(--copper);
+    box-shadow: 0 15px 45px rgba(236,134,39,0.1);
+}
+
+.charter-cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 15px;
+}
+
+.charter-cta-text {
+    font-size: 1.05rem;
+    color: var(--text-gray);
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+.charter-cta-btn {
+    display: inline-block;
+    padding: 16px 48px;
+    border: 2px solid var(--copper);
+    color: var(--white);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 3px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    background: transparent;
+    cursor: pointer;
+}
+
+.charter-cta-btn:hover {
+    background: var(--copper);
+    border-color: var(--copper);
+    box-shadow: 0 12px 30px rgba(236,134,39,0.25);
+    transform: translateY(-2px);
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 900px) {
+    .charter-title {
+        font-size: 3rem;
+        letter-spacing: 10px;
+    }
+    
+    .charter-subtitle {
+        font-size: 1.2rem;
+    }
+    
+    .chapter-body-inner {
+        padding: 10px 20px 30px;
+    }
+    
+    .signatures-main {
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
+    
+    .signatures-seal-column {
+        order: 2;
+    }
+    
+    .signatures-column {
+        width: 100%;
+        padding-bottom: 0;
+        order: 1;
+    }
+    
+    .signature-block {
+        text-align: center;
+    }
+    
+    .signature-line {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    
+    .signature-image-wrapper {
+        justify-content: center;
+    }
+}
+
+@media (max-width: 768px) {
+    .charter-hero {
+        min-height: 35vh;
+    }
+    
+    .charter-title {
+        font-size: 2.2rem;
+        letter-spacing: 8px;
+    }
+    
+    .charter-subtitle {
+        font-size: 1rem;
+    }
+    
+    .charter-controls-inner {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+    
+    .chapter-header {
+        padding: 18px 20px;
+    }
+    
+    .chapter-header-text {
+        font-size: 1.1rem;
+    }
+    
+    .article-block {
+        padding: 15px 0 15px 15px;
+    }
+    
+    .article-text {
+        font-size: 0.9rem;
+    }
+    
+    .signatures-wrapper {
+        padding: 35px 25px 30px;
+    }
+    
+    .signature-seal {
+        width: 120px;
+        height: 120px;
+    }
+    
+    .charter-cta-card {
+        padding: 40px 24px;
+    }
+    
+    .charter-cta-title {
+        font-size: 1.6rem;
+    }
+    
+    .charter-cta-btn {
+        padding: 14px 34px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .charter-title {
+        font-size: 1.7rem;
+        letter-spacing: 5px;
+    }
+    
+    .signatures-wrapper {
+        padding: 25px 18px 25px;
+    }
+
+    .signature-seal {
+        width: 100px;
+        height: 100px;
+    }
+    
+    .history-item {
+        padding-left: 30px;
+    }
+}

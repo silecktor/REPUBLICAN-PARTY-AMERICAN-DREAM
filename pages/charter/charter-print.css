@@ -1,0 +1,216 @@
+@media print {
+    /* Скрываем всё лишнее */
+    .main-header,
+    .charter-controls,
+    .charter-cta-section,
+    .main-footer,
+    .theme-switcher-wrapper,
+    .fade-in-section {
+        display: none !important;
+    }
+    
+    /* Базовый сброс */
+    body,
+    .charter-hero,
+    .charter-chapters,
+    .charter-signatures,
+    .charter-history,
+    .charter-amendment-notice {
+        background: white !important;
+        color: black !important;
+        margin: 0;
+        padding: 0;
+    }
+    
+    /* Титульная секция */
+    .charter-hero {
+        min-height: auto;
+        margin-top: 0;
+        padding: 40px 0 30px;
+        page-break-after: always;
+    }
+    
+    .charter-hero-watermark {
+        opacity: 0.08;
+    }
+    
+    .charter-title {
+        color: #1a1a1a !important;
+        font-size: 2.5rem;
+        letter-spacing: 10px;
+    }
+    
+    .charter-subtitle {
+        color: #333 !important;
+    }
+    
+    .charter-adopted,
+    .charter-date {
+        color: #555 !important;
+    }
+    
+    .charter-hero-line {
+        background: #999 !important;
+    }
+    
+    /* Главы */
+    .chapter-block {
+        border: none !important;
+        border-bottom: 1px solid #ccc !important;
+        border-radius: 0 !important;
+        margin-bottom: 0;
+        page-break-inside: avoid;
+    }
+    
+    .chapter-block.open {
+        border-color: #ccc !important;
+    }
+    
+    .chapter-header {
+        background: none !important;
+        cursor: default;
+        padding: 15px 0;
+    }
+    
+    .chapter-header-text {
+        color: #1a1a1a !important;
+        font-size: 1.1rem;
+    }
+    
+    .chapter-arrow {
+        display: none;
+    }
+    
+    .chapter-body {
+        max-height: none !important;
+    }
+    
+    .chapter-body-inner {
+        background: none !important;
+        padding: 0 0 20px 0;
+    }
+    
+    /* Статьи */
+    .article-block {
+        border-left-color: #ccc !important;
+        padding: 12px 0 12px 15px;
+    }
+    
+    .article-number,
+    .article-title {
+        color: #333 !important;
+    }
+    
+    .article-text {
+        color: #1a1a1a !important;
+    }
+    
+    /* Блок подписей */
+    .signatures-wrapper {
+        border: 1px solid #ccc !important;
+        background: none !important;
+        page-break-inside: avoid;
+    }
+    
+    .signatures-header-text {
+        color: #333 !important;
+    }
+    
+    .signatures-header-text strong {
+        color: #1a1a1a !important;
+    }
+    
+    .signatures-approval {
+        color: #1a1a1a !important;
+    }
+    
+    .signature-line {
+        background: #999 !important;
+    }
+    
+    .signature-courtesy {
+        color: #555 !important;
+    }
+    
+    .signature-role {
+        color: #333 !important;
+    }
+    
+    .signature-name {
+        color: #1a1a1a !important;
+    }
+    
+    .signature-image-wrapper img {
+        opacity: 1 !important;
+        filter: none !important;
+    }
+    
+    .signature-seal {
+        width: 145px !important;
+        height: 145px !important;
+    }
+    
+    .signature-seal img {
+        opacity: 1 !important;
+        filter: none !important;
+    }
+    
+    .signature-seal span {
+        border-color: #333 !important;
+        color: #333 !important;
+    }
+    
+    .signature-seal-label {
+        color: #555 !important;
+    }
+    
+    /* История изменений */
+    .history-title {
+        color: #1a1a1a !important;
+    }
+    
+    .history-list::before {
+        background: #ccc !important;
+    }
+    
+    .history-item::before {
+        border-color: #333 !important;
+        background: white !important;
+    }
+    
+    .history-item:first-child::before {
+        background: #333 !important;
+    }
+    
+    .history-protocol {
+        color: #333 !important;
+    }
+    
+    .history-description {
+        color: #555 !important;
+    }
+    
+    /* Сноска */
+    .amendment-notice-inner {
+        border-color: #ccc !important;
+        background: none !important;
+    }
+    
+    .amendment-label {
+        color: #333 !important;
+    }
+    
+    .amendment-details {
+        color: #555 !important;
+    }
+    
+    .amendment-icon {
+        color: #333 !important;
+    }
+    
+    /* Убираем все тени и эффекты */
+    * {
+        box-shadow: none !important;
+        text-shadow: none !important;
+    }
+}
