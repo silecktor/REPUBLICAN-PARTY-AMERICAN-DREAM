@@ -1,0 +1,784 @@
+/* ========== HERO ========== */
+.members-hero {
+    position: relative;
+    min-height: 30vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-top: 73px;
+    background: var(--bg-dark);
+}
+
+.members-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse at 50% 80%, rgba(236,134,39,0.05) 0%, transparent 70%),
+        var(--bg-dark);
+    z-index: 0;
+}
+
+.members-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 50px 20px;
+}
+
+.members-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+}
+
+.members-hero-line {
+    width: 60px;
+    height: 3px;
+    background: var(--copper);
+    margin: 0 auto 20px;
+}
+
+.members-hero-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.05rem;
+    font-weight: 300;
+    letter-spacing: 1px;
+    color: var(--text-gray);
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+/* ========== ТАБЫ ========== */
+.members-tabs-section {
+    padding: 0 20px;
+    background: var(--bg-dark);
+}
+
+.members-tabs {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    gap: 0;
+    border-bottom: 2px solid rgba(236,134,39,0.15);
+}
+
+.members-tab {
+    padding: 16px 30px;
+    border: none;
+    background: transparent;
+    color: var(--text-gray);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    transition: all 0.3s ease;
+    position: relative;
+    border-bottom: 2px solid transparent;
+    margin-bottom: -2px;
+}
+
+.members-tab:hover {
+    color: var(--white);
+}
+
+.members-tab.active {
+    color: var(--gold);
+    border-bottom-color: var(--copper);
+}
+
+.tab-label {
+    white-space: nowrap;
+}
+
+.tab-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 26px;
+    height: 22px;
+    padding: 0 7px;
+    border-radius: 11px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    background: rgba(236,134,39,0.15);
+    color: var(--copper);
+    transition: all 0.3s ease;
+}
+
+.members-tab.active .tab-count {
+    background: var(--copper);
+    color: var(--white);
+}
+
+.tab-count-red {
+    background: rgba(220,53,69,0.15);
+    color: #dc3545;
+}
+
+.members-tab.active .tab-count-red {
+    background: #dc3545;
+    color: #fff;
+}
+
+/* ========== ПАНЕЛЬ УПРАВЛЕНИЯ ========== */
+.members-controls {
+    padding: 25px 20px 10px;
+    background: var(--bg-dark);
+}
+
+.members-controls-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.search-wrapper {
+    flex: 1;
+    max-width: 500px;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.search-icon {
+    position: absolute;
+    left: 14px;
+    width: 18px;
+    height: 18px;
+    color: var(--text-gray);
+    pointer-events: none;
+}
+
+.search-input {
+    width: 100%;
+    padding: 12px 40px 12px 42px;
+    border: 1px solid rgba(236,134,39,0.2);
+    border-radius: 4px;
+    background: var(--card-bg);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s ease;
+}
+
+.search-input::placeholder {
+    color: var(--text-gray);
+    opacity: 0.6;
+}
+
+.search-input:focus {
+    border-color: var(--copper);
+}
+
+.search-clear {
+    position: absolute;
+    right: 10px;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+}
+
+.search-clear:hover {
+    color: var(--white);
+    background: rgba(255,255,255,0.1);
+}
+
+.refresh-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 20px;
+    border: 1px solid var(--copper);
+    border-radius: 4px;
+    background: transparent;
+    color: var(--copper);
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.refresh-btn:hover {
+    background: var(--copper);
+    color: var(--white);
+}
+
+.refresh-icon {
+    width: 16px;
+    height: 16px;
+}
+
+.refresh-btn.loading .refresh-icon {
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========== УВЕДОМЛЕНИЕ ========== */
+.members-notification {
+    padding: 0 20px;
+    background: var(--bg-dark);
+}
+
+.notification-inner {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 14px 20px;
+    background: rgba(236,134,39,0.1);
+    border: 1px solid rgba(236,134,39,0.25);
+    border-radius: 4px;
+    color: var(--copper);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    text-align: center;
+    animation: fadeInOut 3s ease forwards;
+}
+
+@keyframes fadeInOut {
+    0% { opacity: 0; transform: translateY(-5px); }
+    15% { opacity: 1; transform: translateY(0); }
+    75% { opacity: 1; }
+    100% { opacity: 0; }
+}
+
+/* ========== ТАБЛИЦА ========== */
+.members-table-section {
+    padding: 20px 20px 30px;
+    background: var(--bg-dark);
+}
+
+.table-container {
+    max-width: 900px;
+    margin: 0 auto;
+    overflow-x: visible;
+}
+
+.table-container table {
+    width: 100%;
+    min-width: 100%;
+}
+
+.members-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    table-layout: fixed;
+}
+
+.members-table thead th {
+    padding: 14px 12px;
+    text-align: left;
+    font-weight: 700;
+    font-size: 0.78rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--gold);
+    border-bottom: 2px solid rgba(236,134,39,0.25);
+    cursor: pointer;
+    user-select: none;
+    white-space: nowrap;
+    transition: color 0.2s ease;
+    position: relative;
+}
+
+.members-table thead th:hover {
+    color: var(--copper);
+}
+
+.members-table thead th .sort-arrow {
+    display: inline-block;
+    margin-left: 4px;
+    font-size: 0.65rem;
+    opacity: 0.4;
+    transition: opacity 0.2s ease;
+}
+
+.members-table thead th.sorted .sort-arrow {
+    opacity: 1;
+}
+
+.members-table tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.2s ease;
+    cursor: pointer;
+}
+
+.members-table tbody tr:hover {
+    background: rgba(236,134,39,0.04);
+}
+
+.members-table tbody td {
+    padding: 13px 12px;
+    color: var(--white);
+    vertical-align: middle;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Разделитель "Бывшие члены" */
+.members-table .divider-row td {
+    padding: 20px 12px 10px;
+    font-weight: 700;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    color: var(--text-gray);
+    border-bottom: 1px solid rgba(236,134,39,0.15);
+    cursor: default;
+    text-align: center;
+}
+
+.members-table .divider-row:hover {
+    background: transparent;
+}
+
+/* Бывшие члены */
+.members-table tbody tr.former-member td {
+    color: rgba(160,160,165,0.6);
+    font-style: italic;
+}
+
+.members-table tbody tr.former-member:hover {
+    background: rgba(255,255,255,0.02);
+}
+
+/* Чёрный список */
+.members-table tbody tr.blacklist-row td {
+    color: var(--white);
+}
+
+.members-table tbody tr.blacklist-row:hover {
+    background: rgba(220,53,69,0.06);
+}
+
+/* Раскрытая строка */
+.members-table .expanded-row td {
+    padding: 0 12px;
+    border-bottom: none;
+    cursor: default;
+    overflow: hidden;
+}
+
+.members-table .expanded-row:hover {
+    background: transparent;
+}
+
+.expanded-row-inner {
+    overflow: hidden;
+    transition: max-height 0.45s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.35s ease, padding 0.45s ease;
+}
+
+.expanded-row-inner.collapsed {
+    max-height: 0;
+    opacity: 0;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.expanded-row-inner.expanded {
+    max-height: 200px;
+    opacity: 1;
+    padding-top: 0;
+    padding-bottom: 15px;
+}
+
+.expanded-details {
+    padding: 15px 20px;
+    background: rgba(236,134,39,0.04);
+    border-radius: 4px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.expanded-details .detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+}
+
+.expanded-details .detail-label {
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--copper);
+    font-weight: 700;
+}
+
+.expanded-details .detail-value {
+    font-size: 0.9rem;
+    color: var(--white);
+}
+
+/* ========== БЕЙДЖИ СТАТУСОВ ========== */
+.status-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 3px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    white-space: nowrap;
+}
+
+.status-chairman {
+    background: var(--gold);
+    color: #0f0f11;
+}
+
+.status-deputy {
+    background: var(--copper);
+    color: #fff;
+}
+
+.status-secretary {
+    background: var(--copper);
+    color: #fff;
+}
+
+.status-senior {
+    background: transparent;
+    color: var(--copper);
+    border: 1.5px solid var(--copper);
+}
+
+.status-member {
+    background: transparent;
+    color: var(--text-gray);
+    border: 1.5px solid rgba(255,255,255,0.2);
+}
+
+.status-probation {
+    background: rgba(236,134,39,0.2);
+    color: var(--copper);
+}
+
+.status-former {
+    background: rgba(255,255,255,0.08);
+    color: rgba(160,160,165,0.6);
+}
+
+.status-blacklist {
+    background: rgba(220,53,69,0.2);
+    color: #dc3545;
+}
+
+/* ========== ФУТЕР ТАБЛИЦЫ ========== */
+.table-footer {
+    max-width: 900px;
+    margin: 15px auto 0;
+    padding-top: 10px;
+    border-top: 1px solid rgba(236,134,39,0.2);
+    display: flex;
+    justify-content: space-between;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    color: var(--text-gray);
+}
+
+.table-footer .total-count {
+    color: var(--copper);
+    font-weight: 600;
+}
+
+/* ========== НЕТ ДАННЫХ ========== */
+.no-data {
+    text-align: center;
+    padding: 60px 20px;
+    color: var(--text-gray);
+}
+
+.no-data h3 {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+.no-data p {
+    font-size: 0.95rem;
+}
+
+/* ========== ЗАГРУЗКА ========== */
+.loading-spinner {
+    text-align: center;
+    padding: 60px 20px;
+}
+
+.loading-spinner .spinner {
+    width: 36px;
+    height: 36px;
+    border: 3px solid rgba(236,134,39,0.2);
+    border-top-color: var(--copper);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 0 auto 15px;
+}
+
+.loading-spinner p {
+    color: var(--text-gray);
+    font-size: 0.9rem;
+}
+
+/* ========== CTA ========== */
+.members-cta-section {
+    padding: 0 20px 100px;
+    background: var(--bg-dark);
+}
+
+.members-cta-card {
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 60px 40px;
+    background: var(--card-bg);
+    border: 1px solid rgba(212,175,55,0.2);
+    border-radius: 6px;
+    box-shadow: 0 10px 35px rgba(0,0,0,0.3);
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.members-cta-card:hover {
+    border-color: var(--copper);
+    box-shadow: 0 15px 45px rgba(236,134,39,0.1);
+}
+
+.members-cta-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.2rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin-bottom: 15px;
+}
+
+.members-cta-text {
+    font-size: 1.05rem;
+    color: var(--text-gray);
+    margin-bottom: 35px;
+    line-height: 1.6;
+}
+
+.members-cta-btn {
+    display: inline-block;
+    padding: 16px 48px;
+    border: 2px solid var(--copper);
+    color: var(--white);
+    text-decoration: none;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    font-weight: 700;
+    font-size: 0.9rem;
+    border-radius: 3px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    background: transparent;
+    cursor: pointer;
+}
+
+.members-cta-btn:hover {
+    background: var(--copper);
+    border-color: var(--copper);
+    box-shadow: 0 12px 30px rgba(236,134,39,0.25);
+    transform: translateY(-2px);
+}
+
+/* ========== СВЕТЛАЯ ТЕМА ========== */
+body.light-mode .members-table thead th {
+    color: #b8860b;
+}
+
+body.light-mode .members-table tbody td {
+    color: #1a1a1a;
+}
+
+body.light-mode .members-table tbody tr {
+    border-bottom-color: rgba(0,0,0,0.06);
+}
+
+body.light-mode .members-table tbody tr:hover {
+    background: rgba(236,134,39,0.03);
+}
+
+body.light-mode .members-table tbody tr.former-member td {
+    color: rgba(80,80,80,0.6);
+}
+
+body.light-mode .members-table tbody tr.blacklist-row td {
+    color: #1a1a1a;
+}
+
+body.light-mode .members-table tbody tr.blacklist-row:hover {
+    background: rgba(220,53,69,0.04);
+}
+
+body.light-mode .expanded-details {
+    background: rgba(236,134,39,0.03);
+}
+
+body.light-mode .expanded-details .detail-value {
+    color: #1a1a1a;
+}
+
+body.light-mode .status-member {
+    border-color: rgba(0,0,0,0.15);
+    color: #555;
+}
+
+body.light-mode .status-former {
+    background: rgba(0,0,0,0.04);
+    color: rgba(80,80,80,0.6);
+}
+
+body.light-mode .status-senior {
+    color: #b8860b;
+    border-color: #b8860b;
+}
+
+body.light-mode .search-input {
+    color: #1a1a1a;
+    border-color: rgba(0,0,0,0.15);
+}
+
+body.light-mode .search-input::placeholder {
+    color: #888;
+}
+
+body.light-mode .search-input:focus {
+    border-color: var(--copper);
+}
+
+body.light-mode .table-footer {
+    border-top-color: rgba(0,0,0,0.1);
+    color: #555;
+}
+
+body.light-mode .divider-row td {
+    color: #888;
+    border-bottom-color: rgba(0,0,0,0.1);
+}
+
+body.light-mode .no-data h3 {
+    color: #b8860b;
+}
+
+body.light-mode .no-data p {
+    color: #555;
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 900px) {
+    .table-container {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+    
+    .table-container table {
+        min-width: 650px;
+    }
+}
+
+@media (max-width: 768px) {
+    .members-hero-title {
+        font-size: 2rem;
+        letter-spacing: 2px;
+    }
+    
+    .members-tab {
+        padding: 14px 18px;
+        font-size: 0.8rem;
+    }
+    
+    .tab-label {
+        font-size: 0.8rem;
+    }
+    
+    .members-controls-inner {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .search-wrapper {
+        max-width: 100%;
+    }
+    
+    .refresh-btn {
+        justify-content: center;
+    }
+    
+    .members-table {
+        font-size: 0.8rem;
+    }
+    
+    .members-table thead th,
+    .members-table tbody td {
+        padding: 10px 8px;
+    }
+    
+    .members-cta-card {
+        padding: 40px 24px;
+    }
+    
+    .members-cta-title {
+        font-size: 1.6rem;
+    }
+    
+    .members-cta-btn {
+        padding: 14px 34px;
+        font-size: 0.85rem;
+    }
+    
+    .table-container table {
+        min-width: 600px;
+    }
+}
+
+@media (max-width: 480px) {
+    .members-hero-title {
+        font-size: 1.6rem;
+    }
+    
+    .members-tab {
+        padding: 12px 14px;
+    }
+    
+    .tab-count {
+        min-width: 22px;
+        height: 18px;
+        font-size: 0.7rem;
+    }
+    
+    .table-container table {
+        min-width: 500px;
+    }
+}
