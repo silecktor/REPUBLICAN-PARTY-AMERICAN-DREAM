@@ -353,7 +353,7 @@ async function sendToDiscord(data) {
     const dateTime = getCurrentDateTime();
     
     const embed = {
-        title: '🦅 Новая заявка на вступление\n-# <@&1502004642782122014>',
+        title: '🦅 Новая заявка на вступление',
         description: `**${data.name}** желает вступить в партию American Dream.`,
         color: 0xec8627,
         timestamp: new Date().toISOString(),
@@ -402,11 +402,12 @@ async function sendToDiscord(data) {
         ],
         footer: {
             text: 'Republican Party «American Dream» • Сан-Андреас',
-            icon_url: 'https://i.imgur.com/logo-placeholder.png'
+            icon_url: 'https://cdn.discordapp.com/attachments/1501242595613999114/1501242702832865443/logo.png?ex=69fb5cb8&is=69fa0b38&hm=2d97ec940b2871cc483981dbc6d471f3c6c7959c76f7418390fe6dbb30d65959&'
         }
     };
     
     const payload = {
+        content: '<@&1502004642782122014>',  // ТЕГ РОЛИ ВНЕ ЭМБЕДА
         username: 'American Dream | Приёмная',
         avatar_url: 'https://cdn.discordapp.com/attachments/1501242595613999114/1501242702832865443/logo.png?ex=69fb5cb8&is=69fa0b38&hm=2d97ec940b2871cc483981dbc6d471f3c6c7959c76f7418390fe6dbb30d65959&',
         embeds: [embed]
@@ -432,11 +433,4 @@ async function sendToDiscord(data) {
         showNotification('Ошибка соединения. Проверьте интернет и попробуйте снова.', true);
         return false;
     }
-}
-
-function escapeHTML(str) {
-    if (!str) return '';
-    const div = document.createElement('div');
-    div.textContent = str;
-    return div.innerHTML;
 }
