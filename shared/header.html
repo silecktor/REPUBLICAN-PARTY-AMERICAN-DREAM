@@ -19,11 +19,23 @@
                 <li><a href="#charter-link">Устав</a></li>
                 <li><a href="#members-link">Члены партии</a></li>
                 <li><a href="#apply-link">Вступить</a></li>
+                <li><a href="#faq-link">FAQ</a></li>  <!-- НОВОЕ: пункт меню FAQ -->
             </ul>
         </nav>
+        <!-- НОВОЕ: кнопка поиска (лупа) -->
+        <button id="search-toggle" class="search-toggle" aria-label="Поиск">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <path d="m21 21-4.35-4.35"></path>
+            </svg>
+        </button>
         <div class="theme-switcher-wrapper">
             <button id="theme-icon" aria-label="Переключить тему оформления">
-                <span class="icon-inner" id="icon-inner">🌙</span>
+                <span class="icon-inner" id="icon-inner">
+                    <svg class="theme-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                    </svg>
+                </span>
             </button>
         </div>
     </div>
