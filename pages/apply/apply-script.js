@@ -353,7 +353,7 @@ async function sendToDiscord(data) {
     const dateTime = getCurrentDateTime();
     
     const embed = {
-        title: '🦅 Новая заявка на вступление',
+        title: '🦅 Новая заявка на вступление\n-# <@&1502004642782122014>',
         description: `**${data.name}** желает вступить в партию American Dream.`,
         color: 0xec8627,
         timestamp: new Date().toISOString(),
@@ -396,8 +396,6 @@ async function sendToDiscord(data) {
                 value: [
                     `**Номер заявки:** ${appNumber}`,
                     `**Дата подачи:** ${dateTime}`,
-                    `**Статус:** Ожидает рассмотрения`,
-                    `**IP заявителя:** скрыт`
                 ].join('\n'),
                 inline: false
             }
