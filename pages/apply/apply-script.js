@@ -2,9 +2,12 @@ document.addEventListener('DOMContentLoaded', () => {
     initApplyPage();
 });
 
-// ========== WEBHOOK ИЗ ENV (ТОЛЬКО ЧЕРЕЗ ПЕРЕМЕННУЮ СРЕДЫ) ==========
+// ========== WEBHOOK URL ==========
 const WEBHOOK_URL = 'https://discord.com/api/webhooks/1501235676128088165/OMo_QFumMq_YHQ9Kp8Xe6HKn7sm3mEECis0WOH6UCSZCTrZLWaELi8_PkxpjzU_DWqn2';
 
+// ========== ПЕРЕМЕННЫЕ ДЛЯ УВЕДОМЛЕНИЙ ==========
+let currentNotification = null;
+let notificationTimeout = null;
 
 function initApplyPage() {
     initModal();
@@ -13,12 +16,8 @@ function initApplyPage() {
     initDraft();
 }
 
-// ========== КАСТОМНОЕ УВЕДОМЛЕНИЕ (правый нижний угол, с кнопкой закрыть, 3 секунды) ==========
-let currentNotification = null;
-let notificationTimeout = null;
-
+// ========== КАСТОМНОЕ УВЕДОМЛЕНИЕ ==========
 function showNotification(message, isError = false) {
-    // Удаляем старое уведомление
     if (currentNotification) {
         currentNotification.remove();
         if (notificationTimeout) clearTimeout(notificationTimeout);
@@ -36,7 +35,6 @@ function showNotification(message, isError = false) {
     document.body.appendChild(notification);
     currentNotification = notification;
     
-    // Кнопка закрытия
     const closeBtn = notification.querySelector('.notification-close');
     closeBtn.addEventListener('click', () => {
         notification.classList.add('hiding');
@@ -47,7 +45,6 @@ function showNotification(message, isError = false) {
         if (notificationTimeout) clearTimeout(notificationTimeout);
     });
     
-    // Авто-закрытие через 3 секунды
     notificationTimeout = setTimeout(() => {
         if (currentNotification === notification) {
             notification.classList.add('hiding');
@@ -59,7 +56,7 @@ function showNotification(message, isError = false) {
     }, 3000);
 }
 
-// ========== ЧЕРНОВИК (sessionStorage, 2 минуты) ==========
+// ========== ЧЕРНОВИК ==========
 function initDraft() {
     const form = document.getElementById('apply-form');
     if (!form) return;
@@ -111,7 +108,7 @@ function initDraft() {
             const nameInput = document.getElementById('full-name');
             if (nameInput) {
                 const oathName = document.querySelector('.oath-name');
-                oathName.textContent = nameInput.value.trim() || '[Имя Фамилия]';
+                if (oathName) oathName.textContent = nameInput.value.trim() || '[Имя Фамилия]';
             }
         } catch(e) { console.warn('Ошибка восстановления черновика', e); }
     };
@@ -123,6 +120,8 @@ function initModal() {
     const openBtn = document.getElementById('open-modal-btn');
     const closeBtn = document.getElementById('modal-close');
     const closeSuccessBtn = document.getElementById('close-success-btn');
+    
+    if (!overlay || !openBtn || !closeBtn) return;
     
     openBtn.addEventListener('click', () => {
         overlay.classList.add('active');
@@ -149,12 +148,18 @@ function initModal() {
 }
 
 function resetForm() {
-    document.getElementById('apply-form').style.display = 'block';
-    document.getElementById('form-success').style.display = 'none';
-    document.getElementById('apply-form').reset();
-    document.querySelectorAll('.form-error').forEach(el => el.classList.remove('visible'));
-    document.querySelectorAll('.form-input, .form-textarea').forEach(el => el.classList.remove('error'));
-    document.querySelector('.oath-name').textContent = '[Имя Фамилия]';
+    const form = document.getElementById('apply-form');
+    const success = document.getElementById('form-success');
+    const errorEls = document.querySelectorAll('.form-error');
+    const inputs = document.querySelectorAll('.form-input, .form-textarea');
+    const oathName = document.querySelector('.oath-name');
+    
+    if (form) form.style.display = 'block';
+    if (success) success.style.display = 'none';
+    if (form) form.reset();
+    errorEls.forEach(el => el.classList.remove('visible'));
+    inputs.forEach(el => el.classList.remove('error'));
+    if (oathName) oathName.textContent = '[Имя Фамилия]';
     sessionStorage.removeItem('applyDraft');
 }
 
@@ -162,6 +167,8 @@ function resetForm() {
 function initOathUpdate() {
     const nameInput = document.getElementById('full-name');
     const oathName = document.querySelector('.oath-name');
+    if (!nameInput || !oathName) return;
+    
     nameInput.addEventListener('input', () => {
         oathName.textContent = nameInput.value.trim() || '[Имя Фамилия]';
     });
@@ -170,6 +177,7 @@ function initOathUpdate() {
 // ========== ВАЛИДАЦИЯ И ОТПРАВКА ==========
 function initFormSubmit() {
     const form = document.getElementById('apply-form');
+    if (!form) return;
     
     form.addEventListener('submit', async (e) => {
         e.preventDefault();
@@ -177,6 +185,8 @@ function initFormSubmit() {
         if (!validateForm()) return;
         
         const submitBtn = document.getElementById('submit-btn');
+        if (!submitBtn) return;
+        
         submitBtn.classList.add('loading');
         submitBtn.disabled = true;
         
@@ -188,7 +198,8 @@ function initFormSubmit() {
         
         if (success) {
             form.style.display = 'none';
-            document.getElementById('form-success').style.display = 'block';
+            const successDiv = document.getElementById('form-success');
+            if (successDiv) successDiv.style.display = 'block';
             sessionStorage.removeItem('applyDraft');
         }
     });
@@ -209,14 +220,15 @@ function validateForm() {
         { id: 'goals', name: 'Чего хотите добиться' }
     ];
     
-    fields.forEach(field => {
+    for (const field of fields) {
         const el = document.getElementById(field.id);
-        const errorEl = el.closest('.form-group').querySelector('.form-error');
+        if (!el) continue;
+        const errorEl = el.closest('.form-group')?.querySelector('.form-error');
         const value = el.value.trim();
         
         if (!value) {
             const msg = `Поле «${field.name}» обязательно для заполнения`;
-            showError(el, errorEl, msg);
+            if (errorEl) showError(el, errorEl, msg);
             if (isValid) {
                 showNotification(msg, true);
                 firstErrorField = el;
@@ -226,50 +238,50 @@ function validateForm() {
             const age = parseInt(value);
             if (isNaN(age) || age < 14 || age > 99) {
                 const msg = 'Укажите корректный возраст (14-99)';
-                showError(el, errorEl, msg);
+                if (errorEl) showError(el, errorEl, msg);
                 if (isValid) {
                     showNotification(msg, true);
                     firstErrorField = el;
                 }
                 isValid = false;
             } else {
-                clearError(el, errorEl);
+                if (errorEl) clearError(el, errorEl);
             }
         } else if (field.id === 'id-photo' && !isValidURL(value)) {
             const msg = 'Укажите корректную ссылку на фото ID-карты';
-            showError(el, errorEl, msg);
+            if (errorEl) showError(el, errorEl, msg);
             if (isValid) {
                 showNotification(msg, true);
                 firstErrorField = el;
             }
             isValid = false;
         } else {
-            clearError(el, errorEl);
+            if (errorEl) clearError(el, errorEl);
         }
-    });
-    
-    const extraPhoto = document.getElementById('extra-photo');
-    const extraPhotoError = extraPhoto.closest('.form-group').querySelector('.form-error');
-    if (extraPhoto.value.trim() && !isValidURL(extraPhoto.value.trim())) {
-        const msg = 'Укажите корректную ссылку на дополнительное фото';
-        showError(extraPhoto, extraPhotoError, msg);
-        if (isValid) {
-            showNotification(msg, true);
-            firstErrorField = extraPhoto;
-        }
-        isValid = false;
-    } else {
-        clearError(extraPhoto, extraPhotoError);
     }
     
-    // КАСТОМНЫЕ УВЕДОМЛЕНИЯ ДЛЯ ЧЕКБОКСОВ (без alert)
+    const extraPhoto = document.getElementById('extra-photo');
+    if (extraPhoto && extraPhoto.value.trim()) {
+        const extraPhotoError = extraPhoto.closest('.form-group')?.querySelector('.form-error');
+        if (!isValidURL(extraPhoto.value.trim())) {
+            const msg = 'Укажите корректную ссылку на дополнительное фото';
+            if (extraPhotoError) showError(extraPhoto, extraPhotoError, msg);
+            if (isValid) {
+                showNotification(msg, true);
+                firstErrorField = extraPhoto;
+            }
+            isValid = false;
+        } else if (extraPhotoError) {
+            clearError(extraPhoto, extraPhotoError);
+        }
+    }
+    
     const checkboxes = ['accept-charter', 'accept-data', 'accept-oath'];
     const checkboxNames = ['принятие Устава', 'обработку данных', 'клятву'];
     
     for (let i = 0; i < checkboxes.length; i++) {
-        const id = checkboxes[i];
-        const checkbox = document.getElementById(id);
-        if (!checkbox.checked) {
+        const checkbox = document.getElementById(checkboxes[i]);
+        if (!checkbox || !checkbox.checked) {
             const msg = `Необходимо подтвердить: ${checkboxNames[i]}`;
             showNotification(msg, true);
             isValid = false;
@@ -292,7 +304,7 @@ function showError(el, errorEl, message) {
 
 function clearError(el, errorEl) {
     el.classList.remove('error');
-    if (errorEl) errorEl.classList.remove('visible');
+    errorEl.classList.remove('visible');
 }
 
 function isValidURL(str) {
@@ -305,16 +317,17 @@ function isValidURL(str) {
 }
 
 function collectFormData() {
+    const getValue = (id) => document.getElementById(id)?.value.trim() || '';
     return {
-        name: document.getElementById('full-name').value.trim(),
-        oocAge: document.getElementById('ooc-age').value.trim(),
-        icAge: document.getElementById('ic-age').value.trim(),
-        idCard: document.getElementById('id-card').value.trim(),
-        discord: document.getElementById('discord').value.trim(),
-        idPhoto: document.getElementById('id-photo').value.trim(),
-        extraPhoto: document.getElementById('extra-photo').value.trim(),
-        whyJoin: document.getElementById('why-join').value.trim(),
-        goals: document.getElementById('goals').value.trim()
+        name: getValue('full-name'),
+        oocAge: getValue('ooc-age'),
+        icAge: getValue('ic-age'),
+        idCard: getValue('id-card'),
+        discord: getValue('discord'),
+        idPhoto: getValue('id-photo'),
+        extraPhoto: getValue('extra-photo'),
+        whyJoin: getValue('why-join'),
+        goals: getValue('goals')
     };
 }
 
@@ -397,7 +410,7 @@ async function sendToDiscord(data) {
     
     const payload = {
         username: 'American Dream | Приёмная',
-        avatar_url: 'https://i.imgur.com/logo-placeholder.png',
+        avatar_url: 'https://cdn.discordapp.com/attachments/1501242595613999114/1501242702832865443/logo.png?ex=69fb5cb8&is=69fa0b38&hm=2d97ec940b2871cc483981dbc6d471f3c6c7959c76f7418390fe6dbb30d65959&',
         embeds: [embed]
     };
     
