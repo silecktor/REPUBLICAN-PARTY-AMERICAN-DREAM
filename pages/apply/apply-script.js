@@ -2,10 +2,10 @@ document.addEventListener('DOMContentLoaded', () => {
     initApplyPage();
 });
 
-// Безопасное получение webhook: сначала из env (если доступно), затем из захардкоженного
+// ========== WEBHOOK ИЗ ENV (ТОЛЬКО ЧЕРЕЗ ПЕРЕМЕННУЮ СРЕДЫ) ==========
 const WEBHOOK_URL = (typeof process !== 'undefined' && process.env && process.env.WEBHOOK_URL) 
     ? process.env.WEBHOOK_URL 
-    : 'https://discord.com/api/webhooks/1501235676128088165/OMo_QFumMq_YHQ9Kp8Xe6HKn7sm3mEECis0WOH6UCSZCTrZLWaELi8_PkxpjzU_DWqn2';
+    : (() => { throw new Error('WEBHOOK_URL не задан в переменных окружения') })();
 
 function initApplyPage() {
     initModal();
