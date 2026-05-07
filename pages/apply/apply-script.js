@@ -2,12 +2,120 @@ document.addEventListener('DOMContentLoaded', () => {
     initApplyPage();
 });
 
-const WEBHOOK_URL = 'https://discord.com/api/webhooks/1501235676128088165/OMo_QFumMq_YHQ9Kp8Xe6HKn7sm3mEECis0WOH6UCSZCTrZLWaELi8_PkxpjzU_DWqn2';
+// Безопасное получение webhook: сначала из env (если доступно), затем из захардкоженного
+const WEBHOOK_URL = (typeof process !== 'undefined' && process.env && process.env.WEBHOOK_URL) 
+    ? process.env.WEBHOOK_URL 
+    : 'https://discord.com/api/webhooks/1501235676128088165/OMo_QFumMq_YHQ9Kp8Xe6HKn7sm3mEECis0WOH6UCSZCTrZLWaELi8_PkxpjzU_DWqn2';
 
 function initApplyPage() {
     initModal();
     initOathUpdate();
     initFormSubmit();
+    initDraft();
+}
+
+// ========== КАСТОМНОЕ УВЕДОМЛЕНИЕ (правый нижний угол, с кнопкой закрыть, 3 секунды) ==========
+let currentNotification = null;
+let notificationTimeout = null;
+
+function showNotification(message, isError = false) {
+    // Удаляем старое уведомление
+    if (currentNotification) {
+        currentNotification.remove();
+        if (notificationTimeout) clearTimeout(notificationTimeout);
+    }
+    
+    const notification = document.createElement('div');
+    notification.className = 'custom-notification';
+    if (isError) notification.classList.add('error');
+    
+    notification.innerHTML = `
+        <div class="notification-text">${escapeHTML(message)}</div>
+        <button class="notification-close">✕</button>
+    `;
+    
+    document.body.appendChild(notification);
+    currentNotification = notification;
+    
+    // Кнопка закрытия
+    const closeBtn = notification.querySelector('.notification-close');
+    closeBtn.addEventListener('click', () => {
+        notification.classList.add('hiding');
+        setTimeout(() => {
+            if (notification.parentNode) notification.remove();
+            if (currentNotification === notification) currentNotification = null;
+        }, 300);
+        if (notificationTimeout) clearTimeout(notificationTimeout);
+    });
+    
+    // Авто-закрытие через 3 секунды
+    notificationTimeout = setTimeout(() => {
+        if (currentNotification === notification) {
+            notification.classList.add('hiding');
+            setTimeout(() => {
+                if (notification.parentNode) notification.remove();
+                if (currentNotification === notification) currentNotification = null;
+            }, 300);
+        }
+    }, 3000);
+}
+
+// ========== ЧЕРНОВИК (sessionStorage, 2 минуты) ==========
+function initDraft() {
+    const form = document.getElementById('apply-form');
+    if (!form) return;
+
+    let saveTimeout;
+    function saveDraft() {
+        const formData = new FormData(form);
+        const draft = {};
+        for (let [key, value] of formData.entries()) {
+            draft[key] = value;
+        }
+        draft['accept-charter'] = document.getElementById('accept-charter')?.checked || false;
+        draft['accept-data'] = document.getElementById('accept-data')?.checked || false;
+        draft['accept-oath'] = document.getElementById('accept-oath')?.checked || false;
+        draft['timestamp'] = Date.now();
+        sessionStorage.setItem('applyDraft', JSON.stringify(draft));
+    }
+
+    function autoSave() {
+        clearTimeout(saveTimeout);
+        saveTimeout = setTimeout(saveDraft, 500);
+    }
+
+    form.querySelectorAll('input, textarea, select').forEach(el => {
+        el.addEventListener('input', autoSave);
+        el.addEventListener('change', autoSave);
+    });
+    document.getElementById('accept-charter')?.addEventListener('change', autoSave);
+    document.getElementById('accept-data')?.addEventListener('change', autoSave);
+    document.getElementById('accept-oath')?.addEventListener('change', autoSave);
+
+    window.restoreDraft = () => {
+        const raw = sessionStorage.getItem('applyDraft');
+        if (!raw) return;
+        try {
+            const draft = JSON.parse(raw);
+            if (Date.now() - draft.timestamp > 120000) {
+                sessionStorage.removeItem('applyDraft');
+                return;
+            }
+            for (let key in draft) {
+                if (key === 'timestamp') continue;
+                const el = document.getElementById(key);
+                if (el) {
+                    if (el.type === 'checkbox') el.checked = draft[key];
+                    else el.value = draft[key];
+                }
+            }
+            const nameInput = document.getElementById('full-name');
+            if (nameInput) {
+                const oathName = document.querySelector('.oath-name');
+                oathName.textContent = nameInput.value.trim() || '[Имя Фамилия]';
+            }
+        } catch(e) { console.warn('Ошибка восстановления черновика', e); }
+    };
 }
 
 // ========== МОДАЛЬНОЕ ОКНО ==========
@@ -21,6 +129,7 @@ function initModal() {
         overlay.classList.add('active');
         document.body.style.overflow = 'hidden';
         resetForm();
+        if (window.restoreDraft) window.restoreDraft();
     });
     
     function closeModal() {
@@ -29,18 +138,14 @@ function initModal() {
     }
     
     closeBtn.addEventListener('click', closeModal);
-    if (closeSuccessBtn) {
-        closeSuccessBtn.addEventListener('click', closeModal);
-    }
+    if (closeSuccessBtn) closeSuccessBtn.addEventListener('click', closeModal);
     
     overlay.addEventListener('click', (e) => {
         if (e.target === overlay) closeModal();
     });
     
     document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && overlay.classList.contains('active')) {
-            closeModal();
-        }
+        if (e.key === 'Escape' && overlay.classList.contains('active')) closeModal();
     });
 }
 
@@ -51,16 +156,15 @@ function resetForm() {
     document.querySelectorAll('.form-error').forEach(el => el.classList.remove('visible'));
     document.querySelectorAll('.form-input, .form-textarea').forEach(el => el.classList.remove('error'));
     document.querySelector('.oath-name').textContent = '[Имя Фамилия]';
+    sessionStorage.removeItem('applyDraft');
 }
 
 // ========== АВТОПОДСТАНОВКА ИМЕНИ В КЛЯТВУ ==========
 function initOathUpdate() {
     const nameInput = document.getElementById('full-name');
     const oathName = document.querySelector('.oath-name');
-    
     nameInput.addEventListener('input', () => {
-        const name = nameInput.value.trim();
-        oathName.textContent = name || '[Имя Фамилия]';
+        oathName.textContent = nameInput.value.trim() || '[Имя Фамилия]';
     });
 }
 
@@ -86,12 +190,14 @@ function initFormSubmit() {
         if (success) {
             form.style.display = 'none';
             document.getElementById('form-success').style.display = 'block';
+            sessionStorage.removeItem('applyDraft');
         }
     });
 }
 
 function validateForm() {
     let isValid = true;
+    let firstErrorField = null;
     
     const fields = [
         { id: 'full-name', name: 'Имя Фамилия' },
@@ -110,45 +216,71 @@ function validateForm() {
         const value = el.value.trim();
         
         if (!value) {
-            showError(el, errorEl, `Поле «${field.name}» обязательно для заполнения`);
+            const msg = `Поле «${field.name}» обязательно для заполнения`;
+            showError(el, errorEl, msg);
+            if (isValid) {
+                showNotification(msg, true);
+                firstErrorField = el;
+            }
             isValid = false;
         } else if (field.id === 'ooc-age' || field.id === 'ic-age') {
             const age = parseInt(value);
             if (isNaN(age) || age < 14 || age > 99) {
-                showError(el, errorEl, 'Укажите корректный возраст (14-99)');
+                const msg = 'Укажите корректный возраст (14-99)';
+                showError(el, errorEl, msg);
+                if (isValid) {
+                    showNotification(msg, true);
+                    firstErrorField = el;
+                }
                 isValid = false;
             } else {
                 clearError(el, errorEl);
             }
         } else if (field.id === 'id-photo' && !isValidURL(value)) {
-            showError(el, errorEl, 'Укажите корректную ссылку');
+            const msg = 'Укажите корректную ссылку на фото ID-карты';
+            showError(el, errorEl, msg);
+            if (isValid) {
+                showNotification(msg, true);
+                firstErrorField = el;
+            }
             isValid = false;
         } else {
             clearError(el, errorEl);
         }
     });
     
-    // Доп. фото — необязательно, но если заполнено — валидируем
     const extraPhoto = document.getElementById('extra-photo');
     const extraPhotoError = extraPhoto.closest('.form-group').querySelector('.form-error');
     if (extraPhoto.value.trim() && !isValidURL(extraPhoto.value.trim())) {
-        showError(extraPhoto, extraPhotoError, 'Укажите корректную ссылку');
+        const msg = 'Укажите корректную ссылку на дополнительное фото';
+        showError(extraPhoto, extraPhotoError, msg);
+        if (isValid) {
+            showNotification(msg, true);
+            firstErrorField = extraPhoto;
+        }
         isValid = false;
     } else {
         clearError(extraPhoto, extraPhotoError);
     }
     
-    // Галочки
+    // КАСТОМНЫЕ УВЕДОМЛЕНИЯ ДЛЯ ЧЕКБОКСОВ (без alert)
     const checkboxes = ['accept-charter', 'accept-data', 'accept-oath'];
     const checkboxNames = ['принятие Устава', 'обработку данных', 'клятву'];
     
-    checkboxes.forEach((id, index) => {
+    for (let i = 0; i < checkboxes.length; i++) {
+        const id = checkboxes[i];
         const checkbox = document.getElementById(id);
         if (!checkbox.checked) {
-            alert(`Необходимо подтвердить: ${checkboxNames[index]}`);
+            const msg = `Необходимо подтвердить: ${checkboxNames[i]}`;
+            showNotification(msg, true);
             isValid = false;
+            break;
         }
-    });
+    }
+    
+    if (firstErrorField) {
+        firstErrorField.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
     
     return isValid;
 }
@@ -161,9 +293,7 @@ function showError(el, errorEl, message) {
 
 function clearError(el, errorEl) {
     el.classList.remove('error');
-    if (errorEl) {
-        errorEl.classList.remove('visible');
-    }
+    if (errorEl) errorEl.classList.remove('visible');
 }
 
 function isValidURL(str) {
@@ -252,21 +382,23 @@ async function sendToDiscord(data) {
             {
                 name: '📋 Техническая информация',
                 value: [
-                    `-# **Номер заявки:** ${appNumber}`,
-                    `-# **Дата подачи:** ${dateTime}`,
+                    `**Номер заявки:** ${appNumber}`,
+                    `**Дата подачи:** ${dateTime}`,
+                    `**Статус:** Ожидает рассмотрения`,
+                    `**IP заявителя:** скрыт`
                 ].join('\n'),
                 inline: false
             }
         ],
         footer: {
             text: 'Republican Party «American Dream» • Сан-Андреас',
-            icon_url: 'https://media.discordapp.net/attachments/1501242595613999114/1501242702832865443/logo.png?ex=69fd56f8&is=69fc0578&hm=418d8b0402c9b4909f9ea519005807584d7a02ba0138357aee3c5105d9ff8716&=&format=webp&quality=lossless&width=944&height=833'
+            icon_url: 'https://i.imgur.com/logo-placeholder.png'
         }
     };
     
     const payload = {
         username: 'American Dream | Приёмная',
-        avatar_url: 'https://media.discordapp.net/attachments/1501242595613999114/1501242702832865443/logo.png?ex=69fd56f8&is=69fc0578&hm=418d8b0402c9b4909f9ea519005807584d7a02ba0138357aee3c5105d9ff8716&=&format=webp&quality=lossless&width=944&height=833',
+        avatar_url: 'https://i.imgur.com/logo-placeholder.png',
         embeds: [embed]
     };
     
@@ -278,15 +410,23 @@ async function sendToDiscord(data) {
         });
         
         if (response.ok) {
+            showNotification('Заявка успешно отправлена!', false);
             return true;
         } else {
             console.error('Ошибка Discord:', response.status);
-            alert('Ошибка при отправке заявки. Попробуйте позже.');
+            showNotification('Ошибка при отправке заявки. Попробуйте позже.', true);
             return false;
         }
     } catch (error) {
         console.error('Ошибка сети:', error);
-        alert('Ошибка соединения. Проверьте интернет и попробуйте снова.');
+        showNotification('Ошибка соединения. Проверьте интернет и попробуйте снова.', true);
         return false;
     }
+}
+
+function escapeHTML(str) {
+    if (!str) return '';
+    const div = document.createElement('div');
+    div.textContent = str;
+    return div.innerHTML;
 }

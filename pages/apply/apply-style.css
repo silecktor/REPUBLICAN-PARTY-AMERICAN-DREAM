@@ -246,24 +246,33 @@ body.light-mode .apply-hero-subtitle {
 }
 
 .modal-close {
-    width: 36px;
-    height: 36px;
+    width: 40px;
+    height: 40px;
     border: 1px solid rgba(255,255,255,0.1);
     border-radius: 50%;
     background: none;
     color: var(--text-gray);
-    font-size: 1rem;
     cursor: pointer;
     display: flex;
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    padding: 0;
+}
+.modal-close svg {
+    width: 20px;
+    height: 20px;
+    color: var(--text-gray);
+    transition: color 0.3s ease;
 }
 
 .modal-close:hover {
     color: var(--white);
     border-color: var(--copper);
     background: rgba(236,134,39,0.1);
+}
+.modal-close:hover svg {
+    color: var(--white);
 }
 
 .modal-body {
@@ -273,6 +282,17 @@ body.light-mode .apply-hero-subtitle {
 /* ========== ФОРМА ========== */
 .form-group {
     margin-bottom: 22px;
+    animation: slideInUp 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+}
+.form-group:nth-child(1) { animation-delay: 0.1s; }
+.form-group:nth-child(2) { animation-delay: 0.15s; }
+.form-group:nth-child(3) { animation-delay: 0.2s; }
+.form-group:nth-child(4) { animation-delay: 0.25s; }
+.form-group:nth-child(5) { animation-delay: 0.3s; }
+@keyframes slideInUp {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .form-row {
@@ -324,6 +344,12 @@ body.light-mode .apply-hero-subtitle {
 .form-textarea.error {
     border-color: #dc3545;
     box-shadow: 0 0 0 3px rgba(220,53,69,0.08);
+    animation: shake 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
 }
 
 .form-textarea {
@@ -437,12 +463,20 @@ body.light-mode .apply-hero-subtitle {
     letter-spacing: 3px;
     transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     margin-top: 10px;
+    animation: slideInUpForm 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) 0.4s both;
+    position: relative;
+}
+@keyframes slideInUpForm {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .form-submit-btn:hover {
     background: var(--copper);
     border-color: var(--copper);
-    box-shadow: 0 10px 30px rgba(236,134,39,0.25);
+    box-shadow: 0 15px 40px rgba(236,134,39,0.35);
+    transform: translateY(-2px);
+    letter-spacing: 4px;
 }
 
 .form-submit-btn:disabled {
@@ -500,6 +534,102 @@ body.light-mode .apply-hero-subtitle {
     line-height: 1.6;
 }
 
+/* ========== КНОПКА DISCORD В УСПЕХЕ (с PNG иконкой как в футере) ========== */
+.success-discord-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 28px;
+    background: transparent;
+    border: 2px solid var(--copper);
+    border-radius: 6px;
+    color: var(--white);
+    text-decoration: none;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 20px;
+    cursor: pointer;
+}
+.success-discord-btn img {
+    width: 24px;
+    height: 24px;
+}
+.success-discord-btn:hover {
+    background: var(--copper);
+    border-color: var(--copper);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(236,134,39,0.3);
+}
+.success-discord-btn:hover span {
+    color: #fff;
+}
+
+/* ========== КАСТОМНОЕ УВЕДОМЛЕНИЕ (правый нижний угол, с кнопкой закрыть, 3 секунды) ========== */
+.custom-notification {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    max-width: 380px;
+    background: var(--card-bg);
+    border-left: 4px solid var(--copper);
+    border-radius: 8px;
+    padding: 16px 20px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.3);
+    z-index: 10001;
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    animation: slideInRight 0.3s ease forwards;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--white);
+}
+.custom-notification.error {
+    border-left-color: #dc3545;
+}
+.custom-notification .notification-text {
+    flex: 1;
+    line-height: 1.4;
+}
+.custom-notification .notification-close {
+    background: none;
+    border: none;
+    color: var(--text-gray);
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0 4px;
+    transition: color 0.2s ease;
+}
+.custom-notification .notification-close:hover {
+    color: var(--white);
+}
+@keyframes slideInRight {
+    from {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+@keyframes fadeOutRight {
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+        visibility: hidden;
+    }
+}
+.custom-notification.hiding {
+    animation: fadeOutRight 0.3s ease forwards;
+}
+
 /* ========== АДАПТИВНОСТЬ ========== */
 @media (max-width: 1024px) {
     .apply-benefits-grid {
@@ -550,6 +680,13 @@ body.light-mode .apply-hero-subtitle {
     
     .modal-title {
         font-size: 1.3rem;
+    }
+    
+    .custom-notification {
+        bottom: 20px;
+        right: 20px;
+        left: 20px;
+        max-width: none;
     }
 }
 
