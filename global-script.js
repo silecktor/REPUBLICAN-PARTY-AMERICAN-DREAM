@@ -1,4 +1,4 @@
-﻿﻿document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', () => {
     initApp();
 });
 
@@ -8,9 +8,12 @@ async function initApp() {
     initMobileNav();
     setActiveNavLink();
     initScrollAnimations();
+    initScrollToTop();
+    initSearch();
     await loadLeaders();
     initParticles();
     initMemberCounter();
+    initTypeWriter();
 }
 
 // ========== ЗАГРУЗКА ОБЩИХ КОМПОНЕНТОВ ==========
@@ -24,7 +27,6 @@ async function loadSharedComponents() {
     
     fixSharedPaths(basePath);
     
-    // ДАЁМ ВРЕМЯ НА ПОЛНУЮ ОТРИСОВКУ
     setTimeout(() => {
         updateFooterMemberCount();
         updatePartyStats();
@@ -68,6 +70,7 @@ function fixSharedPaths(basePath) {
         '#charter-link': rootPath + 'pages/charter/index.html',
         '#members-link': rootPath + 'pages/members/index.html',
         '#apply-link': rootPath + 'pages/apply/index.html',
+        '#faq-link': rootPath + 'pages/faq/index.html',
         '#discord-link': 'https://discord.gg/2MrcUENkaD',
         '#party-hotline': 'ВРЕМЕННО ОТСУТСТВУЕТ'
     };
@@ -87,21 +90,16 @@ function fixSharedPaths(basePath) {
     });
 }
 
+// ========== СЧЁТЧИК ЧЛЕНОВ В ФУТЕРЕ С АНИМАЦИЕЙ ==========
 async function updateFooterMemberCount() {
-    // ИЩЕМ ИМЕННО ВНУТРИ ФУТЕРА
     const footer = document.querySelector('.main-footer');
-    if (!footer) {
-        console.log('Футер не найден в DOM');
-        return;
-    }
+    if (!footer) return;
     
     const countEl = footer.querySelector('#footer-member-count');
-    if (!countEl) {
-        console.log('Элемент footer-member-count не найден внутри футера');
-        return;
-    }
+    if (!countEl) return;
     
-    console.log('Обновляем счётчик членов...');
+    let oldValue = parseInt(countEl.textContent);
+    if (isNaN(oldValue)) oldValue = 0;
     
     try {
         const response = await fetch('https://docs.google.com/spreadsheets/d/e/2PACX-1vRHonAfiyB-uF6cAh0WnbPZPVJJer0VY3dCvZhJxgfjuKZNiDefGhV33DVaJ76jQQzrXKk0dU2G748T/pub?gid=1290341152&single=true&output=csv', {
@@ -112,7 +110,7 @@ async function updateFooterMemberCount() {
         
         const csv = await response.text();
         const lines = csv.split('\n').filter(line => line.trim());
-        let count = 0;
+        let newCount = 0;
         
         if (lines.length > 1) {
             const headers = lines[0].split(',').map(h => h.trim().replace(/"/g, ''));
@@ -123,17 +121,14 @@ async function updateFooterMemberCount() {
                 const values = lines[i].split(',').map(v => v.trim().replace(/"/g, ''));
                 const name = values[nameColumnIndex] || '';
                 let isActive = true;
-                
                 if (activeColumnIndex !== -1) {
                     isActive = (values[activeColumnIndex] || '').toUpperCase() === 'TRUE';
                 }
-                
-                if (name && isActive) count++;
+                if (name && isActive) newCount++;
             }
         }
         
-        countEl.textContent = count;
-        console.log('Счётчик обновлён:', count);
+        animateNumber(countEl, oldValue, newCount, 800);
         
     } catch (error) {
         console.error('Ошибка счётчика:', error);
@@ -141,49 +136,47 @@ async function updateFooterMemberCount() {
     }
 }
 
+function animateNumber(element, start, end, duration) {
+    if (start === end) return;
+    const startTime = performance.now();
+    function update(currentTime) {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const eased = 1 - Math.pow(1 - progress, 3);
+        const current = Math.floor(start + (end - start) * eased);
+        element.textContent = current;
+        if (progress < 1) {
+            requestAnimationFrame(update);
+        } else {
+            element.textContent = end;
+        }
+    }
+    requestAnimationFrame(update);
+}
+
 async function updatePartyStats() {
     const basePath = getBasePath();
     const jsonPath = basePath + 'data/party-stats.json';
-    
-    // ИЩЕМ КОНТЕЙНЕР ВНУТРИ ФУТЕРА
     const footer = document.querySelector('.main-footer');
-    if (!footer) {
-        console.log('Футер не найден в DOM');
-        return;
-    }
+    if (!footer) return;
     
     const statRows = footer.querySelectorAll('.footer-stat-row');
-    if (statRows.length === 0) {
-        console.log('Элементы .footer-stat-row не найдены внутри футера');
-        return;
-    }
-    
-    console.log('Загружаем JSON по пути:', jsonPath);
+    if (statRows.length === 0) return;
     
     try {
-        const response = await fetch(jsonPath, {
-            cache: 'no-cache'
-        });
-        
+        const response = await fetch(jsonPath, { cache: 'no-cache' });
         if (!response.ok) throw new Error(`HTTP ${response.status}`);
-        
         const stats = await response.json();
-        console.log('JSON получен:', stats);
         
         if (statRows[0] && stats.founded) {
             statRows[0].innerHTML = `<span>Основана: ${stats.founded}</span><span class="footer-stat-dot online"></span>`;
         }
-        
         if (statRows[1] && stats.conventions !== undefined) {
             statRows[1].innerHTML = `<span>Съездов проведено: ${stats.conventions}</span><span class="footer-stat-dot"></span>`;
         }
-        
         if (statRows[2] && stats.lawsProposed !== undefined) {
             statRows[2].innerHTML = `<span>Законов предложено: ${stats.lawsProposed}</span><span class="footer-stat-dot"></span>`;
         }
-        
-        console.log('Статистика обновлена');
-        
     } catch (error) {
         console.error('Ошибка загрузки статистики:', error);
     }
@@ -210,7 +203,6 @@ function initTheme() {
             document.body.className = newTheme;
             localStorage.setItem('theme', newTheme);
             updateThemeIconDOM(iconInner, newTheme);
-            
             iconInner.style.transform = 'rotate(0deg) scale(1)';
             iconInner.style.opacity = '1';
         }, 300);
@@ -218,7 +210,23 @@ function initTheme() {
 }
 
 function updateThemeIconDOM(iconElement, theme) {
-    iconElement.textContent = theme === 'dark-mode' ? '☀️' : '🌙';
+    if (theme === 'dark-mode') {
+        iconElement.innerHTML = `<svg class="theme-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="5"></circle>
+            <line x1="12" y1="1" x2="12" y2="3"></line>
+            <line x1="12" y1="21" x2="12" y2="23"></line>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+            <line x1="1" y1="12" x2="3" y2="12"></line>
+            <line x1="21" y1="12" x2="23" y2="12"></line>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+        </svg>`;
+    } else {
+        iconElement.innerHTML = `<svg class="theme-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+        </svg>`;
+    }
 }
 
 // ========== МОБИЛЬНОЕ МЕНЮ ==========
@@ -270,9 +278,7 @@ function initMobileNav() {
 // ========== АНИМАЦИЯ ПОЯВЛЕНИЯ ПРИ СКРОЛЛЕ ==========
 function initScrollAnimations() {
     const sections = document.querySelectorAll('.fade-in-section');
-    
     if (sections.length === 0) return;
-    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -280,49 +286,265 @@ function initScrollAnimations() {
                 observer.unobserve(entry.target);
             }
         });
-    }, {
-        threshold: 0.15,
-        rootMargin: '0px 0px -50px 0px'
+    }, { threshold: 0.15, rootMargin: '0px 0px -50px 0px' });
+    sections.forEach(section => observer.observe(section));
+}
+
+// ========== КНОПКА «НАВЕРХ» ==========
+function initScrollToTop() {
+    if (document.getElementById('scroll-top-btn')) return;
+    const btn = document.createElement('button');
+    btn.id = 'scroll-top-btn';
+    btn.className = 'scroll-top-btn';
+    btn.innerHTML = '↑';
+    btn.setAttribute('aria-label', 'Наверх');
+    document.body.appendChild(btn);
+    
+    window.addEventListener('scroll', () => {
+        if (window.scrollY > 300) {
+            btn.classList.add('visible');
+        } else {
+            btn.classList.remove('visible');
+        }
     });
     
-    sections.forEach(section => {
-        observer.observe(section);
+    btn.addEventListener('click', () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' });
     });
+}
+
+// ========== ПЕЧАТНАЯ МАШИНКА ==========
+function initTypeWriter() {
+    const quoteElement = document.getElementById('typewriter-quote');
+    if (!quoteElement) return;
+    
+    const fullText = quoteElement.getAttribute('data-quote') || '';
+    if (!fullText) return;
+    
+    let i = 0;
+    let isTypingStarted = false;
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting && !isTypingStarted) {
+                isTypingStarted = true;
+                quoteElement.textContent = '';
+                typeNextChar();
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.3 });
+    
+    observer.observe(quoteElement);
+    
+    function typeNextChar() {
+        if (i < fullText.length) {
+            quoteElement.textContent += fullText.charAt(i);
+            i++;
+            const delay = (fullText.charAt(i-1) === '.' || fullText.charAt(i-1) === '!' || fullText.charAt(i-1) === '?') ? 120 : 40;
+            setTimeout(typeNextChar, delay);
+        }
+    }
+}
+
+// ========== ПОИСК ПО САЙТУ ==========
+let searchIndex = [];
+let searchPanel = null;
+let searchInput = null;
+let searchResults = null;
+
+function initSearch() {
+    if (document.getElementById('global-search-panel')) return;
+    
+    const panel = document.createElement('div');
+    panel.id = 'global-search-panel';
+    panel.className = 'search-panel hidden';
+    panel.innerHTML = `
+        <div class="search-container">
+            <input type="text" id="global-search-input" placeholder="Поиск по сайту, лидерам, кандидатам, уставу..." autocomplete="off">
+            <button id="global-search-close" aria-label="Закрыть поиск">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+        <div id="global-search-results" class="search-results"></div>
+    `;
+    document.body.appendChild(panel);
+    searchPanel = panel;
+    searchInput = document.getElementById('global-search-input');
+    searchResults = document.getElementById('global-search-results');
+    
+    const closeBtn = document.getElementById('global-search-close');
+    closeBtn.addEventListener('click', () => {
+        searchPanel.classList.add('hidden');
+        if (searchInput) searchInput.value = '';
+        searchResults.innerHTML = '';
+    });
+    
+    searchInput.addEventListener('input', debounce(() => {
+        const query = searchInput.value.trim().toLowerCase();
+        if (query.length < 2) {
+            searchResults.innerHTML = '';
+            return;
+        }
+        const matches = searchIndex.filter(item => 
+            item.title.toLowerCase().includes(query) || 
+            (item.description && item.description.toLowerCase().includes(query)) ||
+            (item.content && item.content.toLowerCase().includes(query))
+        ).slice(0, 10);
+        
+        if (matches.length === 0) {
+            searchResults.innerHTML = '<div class="search-no-results">Ничего не найдено</div>';
+            return;
+        }
+        
+        searchResults.innerHTML = matches.map(match => `
+            <div class="search-result-item" data-url="${match.url}" data-section="${match.sectionId || ''}" data-article="${match.articleId || ''}">
+                <div class="result-title">${escapeHTML(match.title)}</div>
+                <div class="result-desc">${escapeHTML(match.description ? match.description.substring(0, 100) : '')}</div>
+                <div class="result-type">${match.type === 'page' ? 'Страница' : match.type === 'leader' ? 'Лидер' : match.type === 'candidate' ? 'Кандидат' : 'Устав'}</div>
+            </div>
+        `).join('');
+        
+        document.querySelectorAll('#global-search-results .search-result-item').forEach(el => {
+            el.addEventListener('click', () => {
+                const url = el.dataset.url;
+                const sectionId = el.dataset.section;
+                if (url) {
+                    window.location.href = sectionId ? `${url}#${sectionId}` : url;
+                }
+            });
+        });
+    }, 300));
+    
+    setTimeout(() => {
+        const searchToggle = document.getElementById('search-toggle');
+        if (searchToggle) {
+            searchToggle.addEventListener('click', () => {
+                searchPanel.classList.toggle('hidden');
+                if (!searchPanel.classList.contains('hidden')) {
+                    searchInput.focus();
+                }
+            });
+        }
+    }, 500);
+    
+    buildSearchIndex();
+}
+
+async function buildSearchIndex() {
+    const basePath = getBasePath();
+    searchIndex = [];
+    
+    const pages = [
+        { title: 'Главная', url: basePath + 'index.html', keywords: 'главная манифест партия', type: 'page' },
+        { title: 'Программа', url: basePath + 'pages/program/index.html', keywords: 'программа цели задачи пункты', type: 'page' },
+        { title: 'Кандидаты', url: basePath + 'pages/candidates/index.html', keywords: 'кандидаты губернатор министры', type: 'page' },
+        { title: 'Устав', url: basePath + 'pages/charter/index.html', keywords: 'устав правила положения', type: 'page' },
+        { title: 'Члены партии', url: basePath + 'pages/members/index.html', keywords: 'члены реестр список', type: 'page' },
+        { title: 'Вступить', url: basePath + 'pages/apply/index.html', keywords: 'вступить заявка подать', type: 'page' },
+        { title: 'FAQ', url: basePath + 'pages/faq/index.html', keywords: 'вопросы ответы часто задаваемые', type: 'page' }
+    ];
+    pages.forEach(page => {
+        searchIndex.push({
+            type: page.type,
+            title: page.title,
+            url: page.url,
+            description: page.keywords,
+            content: page.keywords
+        });
+    });
+    
+    try {
+        const leaders = await fetch(basePath + 'data/leaders.json').then(r => r.json()).catch(() => []);
+        if (Array.isArray(leaders)) {
+            leaders.forEach(leader => {
+                searchIndex.push({
+                    type: 'leader',
+                    title: `${leader.name} — ${leader.role || 'лидер'}`,
+                    url: basePath + 'index.html',
+                    description: leader.bio || '',
+                    content: `${leader.name} ${leader.role} ${leader.bio || ''}`
+                });
+            });
+        }
+    } catch(e) { console.warn('Не загружены лидеры для поиска'); }
+    
+    try {
+        const candidates = await fetch(basePath + 'data/candidates.json').then(r => r.json()).catch(() => []);
+        if (Array.isArray(candidates)) {
+            candidates.filter(c => c.active !== false).forEach(c => {
+                let title = c.name;
+                if (c.tier === 'governor') title += ' — кандидат в губернаторы';
+                else if (c.tier === 'vice-governor') title += ' — вице-губернатор';
+                else title += ` — ${c.role}`;
+                searchIndex.push({
+                    type: 'candidate',
+                    title: title,
+                    url: basePath + 'pages/candidates/index.html',
+                    description: c.bio || '',
+                    content: `${c.name} ${c.role} ${c.quote || ''} ${c.bio || ''}`
+                });
+            });
+        }
+    } catch(e) { console.warn('Не загружены кандидаты для поиска'); }
+    
+    try {
+        const charter = await fetch(basePath + 'data/charter.json').then(r => r.json()).catch(() => null);
+        if (charter && charter.chapters) {
+            charter.chapters.forEach((chapter, chIdx) => {
+                const chapterId = `chapter-${chIdx+1}`;
+                searchIndex.push({
+                    type: 'charter',
+                    title: `${chapter.number}. ${chapter.title}`,
+                    url: basePath + 'pages/charter/index.html',
+                    description: '',
+                    content: `${chapter.number} ${chapter.title}`,
+                    sectionId: chapterId
+                });
+                if (chapter.articles) {
+                    chapter.articles.forEach((article, artIdx) => {
+                        const articleId = `${chapterId}-article-${artIdx+1}`;
+                        searchIndex.push({
+                            type: 'charter',
+                            title: `${chapter.number} — ${article.number || 'Статья'} ${article.title || ''}`,
+                            url: basePath + 'pages/charter/index.html',
+                            description: article.text ? article.text.substring(0, 150) : '',
+                            content: `${article.number || ''} ${article.title || ''} ${article.text || ''}`,
+                            sectionId: chapterId,
+                            articleId: articleId
+                        });
+                    });
+                }
+            });
+        }
+    } catch(e) { console.warn('Не загружен устав для поиска'); }
 }
 
 // ========== АКТИВАЦИЯ ССЫЛОК МЕНЮ ==========
 function setActiveNavLink() {
     const navLinks = document.querySelectorAll('.nav-list a');
     const currentPath = window.location.pathname;
-    
-    navLinks.forEach(link => {
-        link.classList.remove('active');
-    });
-    
+    navLinks.forEach(link => link.classList.remove('active'));
     for (let link of navLinks) {
         const href = link.getAttribute('href');
-        
         if ((currentPath.endsWith('/') || currentPath.endsWith('index.html')) && href === 'index.html') {
-            link.classList.add('active');
-            break;
+            link.classList.add('active'); break;
         }
-        
         if (currentPath.includes(href.replace('index.html', ''))) {
-            link.classList.add('active');
-            break;
+            link.classList.add('active'); break;
         }
     }
 }
 
-// ========== ЗАГРУЗКА ЛИДЕРОВ ==========
+// ========== ЗАГРУЗКА ЛИДЕРОВ + АДАПТИВНАЯ СЕТКА ==========
 async function loadLeaders() {
     const container = document.getElementById('leaders-container');
     if (!container) return;
 
-    const loadingIndicator = document.createElement('div');
-    loadingIndicator.className = 'loading-indicator';
-    loadingIndicator.textContent = 'Загрузка руководства...';
-    container.appendChild(loadingIndicator);
+    showLeaderSkeletons(container);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -333,16 +555,14 @@ async function loadLeaders() {
             signal: controller.signal,
             headers: { 'Cache-Control': 'no-cache' }
         });
-        
         clearTimeout(timeoutId);
-        
         if (!response.ok) throw new Error('Ошибка при чтении JSON');
         
         const leaders = await response.json();
-        container.removeChild(loadingIndicator);
+        container.innerHTML = '';
 
         if (!Array.isArray(leaders) || leaders.length === 0) {
-            container.innerHTML = '<p style="color: var(--gold); grid-column: 1/-1; text-align: center; padding: 40px; font-size: 1.1rem;">Состав руководства будет объявлен позже</p>';
+            container.innerHTML = '<p style="color: var(--gold); text-align: center; padding: 40px;">Состав руководства будет объявлен позже</p>';
             return;
         }
 
@@ -354,7 +574,7 @@ async function loadLeaders() {
             card.setAttribute('aria-expanded', 'false');
             card.dataset.index = index;
             
-            const avatarSrc = leader.avatar ? leader.avatar : basePath + 'assets/images/default-avatar.png';
+            let avatarSrc = leader.avatar && leader.avatar.trim() !== '' ? leader.avatar : basePath + 'assets/images/default-avatar.png';
             
             const img = document.createElement('img');
             img.src = avatarSrc;
@@ -380,34 +600,106 @@ async function loadLeaders() {
             card.appendChild(bioDiv);
             
             card.addEventListener('click', () => {
-                if (isAnimating) return;
-                toggleLeader(index, leaders.length);
+                toggleLeader(card);
             });
-            
             card.addEventListener('keypress', (e) => {
-                if ((e.key === 'Enter' || e.key === ' ') && !isAnimating) {
+                if (e.key === 'Enter' || e.key === ' ') {
                     e.preventDefault();
-                    toggleLeader(index, leaders.length);
+                    toggleLeader(card);
                 }
             });
-            
             container.appendChild(card);
         });
 
-        updateLayout(-1, leaders.length);
-        
+        applyLeadersLayout();
+
         window.addEventListener('resize', debounce(() => {
-            updateLayout(activeIdx, leaders.length);
+            applyLeadersLayout();
         }, 150));
 
     } catch (error) {
         clearTimeout(timeoutId);
         console.error("Ошибка загрузки лидеров:", error);
-        container.innerHTML = '<p style="color: #e74c3c; grid-column: 1/-1; text-align: center; padding: 40px; font-size: 1.1rem;">Не удалось загрузить данные руководства.<br>Пожалуйста, попробуйте позже.</p>';
+        container.innerHTML = '<p style="color: #e74c3c; text-align: center; padding: 40px;">Не удалось загрузить данные руководства.<br>Пожалуйста, попробуйте позже.</p>';
     }
 }
 
-// ========== ЭКРАНИРОВАНИЕ HTML ==========
+// НОВАЯ ФУНКЦИЯ — АДАПТИВНАЯ СЕТКА (1,2,3,4,5+)
+function applyLeadersLayout() {
+    const wrapper = document.querySelector('.leaders-wrapper');
+    if (!wrapper) return;
+    
+    const cards = document.querySelectorAll('.leader-card');
+    const count = cards.length;
+    
+    // Убираем все старые классы
+    wrapper.classList.remove('layout-1', 'layout-2', 'layout-3', 'layout-4', 'layout-5plus');
+    
+    if (count === 1) {
+        wrapper.classList.add('layout-1');
+    } else if (count === 2) {
+        wrapper.classList.add('layout-2');
+    } else if (count === 3) {
+        wrapper.classList.add('layout-3');
+    } else if (count === 4) {
+        wrapper.classList.add('layout-4');
+        // Перестраиваем DOM для 4 карточек: первая отдельно, остальные 3 в ряд
+        const firstCard = cards[0];
+        const otherCards = Array.from(cards).slice(1);
+        const othersContainer = document.createElement('div');
+        othersContainer.className = 'others-row';
+        otherCards.forEach(card => {
+            othersContainer.appendChild(card);
+        });
+        wrapper.innerHTML = '';
+        wrapper.appendChild(firstCard);
+        wrapper.appendChild(othersContainer);
+    } else if (count >= 5) {
+        wrapper.classList.add('layout-5plus');
+        const firstCard = cards[0];
+        const otherCards = Array.from(cards).slice(1);
+        const othersContainer = document.createElement('div');
+        othersContainer.className = 'others-grid';
+        otherCards.forEach(card => {
+            othersContainer.appendChild(card);
+        });
+        wrapper.innerHTML = '';
+        wrapper.appendChild(firstCard);
+        wrapper.appendChild(othersContainer);
+    }
+}
+
+function toggleLeader(selectedCard) {
+    const cards = document.querySelectorAll('.leader-card');
+    const isExpanded = selectedCard.classList.contains('expanded');
+    
+    cards.forEach(card => {
+        card.classList.remove('expanded');
+        card.setAttribute('aria-expanded', 'false');
+    });
+    
+    if (!isExpanded) {
+        selectedCard.classList.add('expanded');
+        selectedCard.setAttribute('aria-expanded', 'true');
+    }
+}
+
+function showLeaderSkeletons(container) {
+    container.innerHTML = '';
+    const skeletonCount = 3;
+    for (let i = 0; i < skeletonCount; i++) {
+        const skeleton = document.createElement('div');
+        skeleton.className = 'leader-card skeleton-leader';
+        skeleton.innerHTML = `
+            <div class="skeleton-avatar"></div>
+            <div class="skeleton-line" style="width: 70%; margin-top: 15px;"></div>
+            <div class="skeleton-line" style="width: 50%;"></div>
+            <div class="skeleton-line" style="width: 90%;"></div>
+        `;
+        container.appendChild(skeleton);
+    }
+}
+
 function escapeHTML(str) {
     if (!str) return '';
     const div = document.createElement('div');
@@ -415,7 +707,6 @@ function escapeHTML(str) {
     return div.innerHTML;
 }
 
-// ========== DEBOUNCE ==========
 function debounce(func, wait) {
     let timeout;
     return function executedFunction(...args) {
@@ -428,16 +719,12 @@ function debounce(func, wait) {
     };
 }
 
-// ========== ПАРТИКЛЫ НА ФОНЕ ==========
 function initParticles() {
     const heroSection = document.querySelector('.hero-section');
     if (!heroSection) return;
-    
     const particlesContainer = document.getElementById('hero-particles');
     if (!particlesContainer) return;
-    
     const particleCount = 20;
-    
     for (let i = 0; i < particleCount; i++) {
         const particle = document.createElement('div');
         const size = Math.random() * 3 + 1;
@@ -446,7 +733,6 @@ function initParticles() {
         const duration = Math.random() * 10 + 15;
         const delay = Math.random() * 10;
         const opacity = Math.random() * 0.3 + 0.1;
-        
         particle.style.cssText = `
             position: absolute;
             width: ${size}px;
@@ -458,36 +744,26 @@ function initParticles() {
             animation: floatUp ${duration}s ${delay}s linear infinite;
             pointer-events: none;
         `;
-        
         particlesContainer.appendChild(particle);
     }
 }
 
-// ========== СЧЁТЧИК ЧЛЕНОВ ПАРТИИ ==========
 function initMemberCounter() {
     const counterElement = document.getElementById('member-count-number');
     if (!counterElement) return;
-    
     const targetCount = parseInt(counterElement.dataset.target) || 247;
     const startCount = parseInt(counterElement.dataset.start) || 0;
     const duration = 2000;
     const startTime = performance.now();
-    
     function animateCounter(currentTime) {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const eased = 1 - Math.pow(1 - progress, 3);
         const current = Math.floor(startCount + (targetCount - startCount) * eased);
-        
         counterElement.textContent = current;
-        
-        if (progress < 1) {
-            requestAnimationFrame(animateCounter);
-        } else {
-            counterElement.textContent = targetCount;
-        }
+        if (progress < 1) requestAnimationFrame(animateCounter);
+        else counterElement.textContent = targetCount;
     }
-    
     const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
             if (entry.isIntersecting) {
@@ -496,114 +772,5 @@ function initMemberCounter() {
             }
         });
     }, { threshold: 0.5 });
-    
     observer.observe(counterElement);
-}
-
-// ========== УПРАВЛЕНИЕ КАРТОЧКАМИ ==========
-let activeIdx = -1;
-let isAnimating = false;
-
-function toggleLeader(index, total) {
-    if (isAnimating) return;
-    
-    isAnimating = true;
-    activeIdx = (activeIdx === index) ? -1 : index;
-    updateLayout(activeIdx, total);
-    
-    setTimeout(() => {
-        isAnimating = false;
-    }, 850);
-}
-
-function updateLayout(expandedIdx, total) {
-    const cards = document.querySelectorAll('.leader-card');
-    const wrapper = document.querySelector('.leaders-wrapper');
-    
-    if (!wrapper || cards.length === 0) return;
-    
-    if (window.innerWidth <= 768) {
-        cards.forEach((card, i) => {
-            card.style.left = 'auto';
-            card.style.top = 'auto';
-            card.style.width = 'auto';
-            card.style.zIndex = 'auto';
-            card.style.position = 'relative';
-            
-            if (expandedIdx === i) {
-                card.classList.add('expanded');
-                card.setAttribute('aria-expanded', 'true');
-            } else {
-                card.classList.remove('expanded');
-                card.setAttribute('aria-expanded', 'false');
-            }
-        });
-        return;
-    }
-    
-    const wrapperWidth = wrapper.clientWidth;
-    const wrapperHeight = wrapper.clientHeight;
-    
-    const setPos = (el, leftPercent, topPercent, widthPercent, isExp) => {
-        const left = (wrapperWidth * leftPercent) / 100;
-        const top = (wrapperHeight * topPercent) / 100;
-        const width = (wrapperWidth * widthPercent) / 100;
-        
-        el.style.position = 'absolute';
-        el.style.left = `${left}px`;
-        el.style.top = `${top}px`;
-        el.style.width = `${width}px`;
-        el.setAttribute('aria-expanded', isExp ? 'true' : 'false');
-        
-        if (isExp) {
-            el.classList.add('expanded');
-            el.style.zIndex = "100";
-        } else {
-            el.classList.remove('expanded');
-            el.style.zIndex = "1";
-        }
-    };
-
-    if (total === 3) {
-        if (expandedIdx === -1) {
-            setPos(cards[0], 35.45, 2.22, 29.09, false);
-            setPos(cards[1], 16.36, 48.89, 29.09, false);
-            setPos(cards[2], 54.55, 48.89, 29.09, false);
-        } 
-        else if (expandedIdx === 0) {
-            setPos(cards[0], 22.73, 5.56, 54.55, true);
-            setPos(cards[1], 1.82, 57.78, 27.27, false); 
-            setPos(cards[2], 70.91, 57.78, 27.27, false);
-        }
-        else if (expandedIdx === 1) {
-            setPos(cards[1], 4.55, 16.67, 54.55, true);
-            setPos(cards[0], 68.18, 5.56, 27.27, false); 
-            setPos(cards[2], 68.18, 50.00, 27.27, false);
-        }
-        else if (expandedIdx === 2) {
-            setPos(cards[2], 40.91, 16.67, 54.55, true);
-            setPos(cards[0], 4.55, 5.56, 27.27, false);  
-            setPos(cards[1], 4.55, 50.00, 27.27, false); 
-        }
-    } 
-    else if (total === 2) {
-        if (expandedIdx === -1) {
-            setPos(cards[0], 16.36, 16.67, 29.09, false);
-            setPos(cards[1], 54.55, 16.67, 29.09, false);
-        } else if (expandedIdx === 0) {
-            setPos(cards[0], 4.55, 11.11, 54.55, true);
-            setPos(cards[1], 68.18, 16.67, 27.27, false);
-        } else if (expandedIdx === 1) {
-            setPos(cards[1], 40.91, 11.11, 54.55, true);
-            setPos(cards[0], 4.55, 16.67, 27.27, false);
-        }
-    } else if (total === 1) {
-        setPos(cards[0], 25.00, 20.00, 50.00, expandedIdx === 0);
-    }
-    
-    if (expandedIdx !== -1) {
-        wrapper.style.height = '1000px';
-    } else {
-        wrapper.style.height = '900px';
-    }
 }
