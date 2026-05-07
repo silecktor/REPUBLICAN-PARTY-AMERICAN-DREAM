@@ -1,0 +1,565 @@
+/* ========== HERO ========== */
+.apply-hero {
+    position: relative;
+    min-height: 55vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+    margin-top: 73px;
+    background: var(--bg-dark);
+}
+
+.apply-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: 
+        url('../../assets/images/join-bg.jpg') center/cover no-repeat;
+    filter: saturate(0.6) brightness(0.4);
+    z-index: 0;
+    transition: filter 0.5s ease;
+}
+
+body.light-mode .apply-hero-bg {
+    filter: saturate(0.5) brightness(0.85);
+}
+
+.apply-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: 
+        radial-gradient(ellipse at 50% 60%, rgba(236,134,39,0.15) 0%, transparent 70%),
+        linear-gradient(to bottom, rgba(15,15,17,0.4) 0%, rgba(15,15,17,0.85) 100%);
+    z-index: 1;
+    transition: background 0.5s ease;
+}
+
+body.light-mode .apply-hero-overlay {
+    background: 
+        radial-gradient(ellipse at 50% 60%, rgba(236,134,39,0.06) 0%, transparent 70%),
+        linear-gradient(to bottom, rgba(248,248,250,0.3) 0%, rgba(248,248,250,0.75) 100%);
+}
+
+.apply-hero-content {
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    padding: 80px 20px;
+}
+
+.apply-hero-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 3.8rem;
+    font-weight: 700;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    margin-bottom: 20px;
+    line-height: 1.2;
+    text-shadow: 0 2px 20px rgba(0,0,0,0.6);
+}
+
+.apply-hero-line {
+    width: 60px;
+    height: 3px;
+    background: var(--copper);
+    margin: 0 auto 25px;
+    box-shadow: 0 0 15px rgba(236,134,39,0.4);
+}
+
+.apply-hero-subtitle {
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 300;
+    letter-spacing: 2px;
+    color: rgba(255,255,255,0.85);
+    max-width: 620px;
+    margin: 0 auto;
+    text-shadow: 0 1px 8px rgba(0,0,0,0.4);
+}
+
+body.light-mode .apply-hero-title {
+    color: #b8860b;
+    text-shadow: 0 2px 15px rgba(0,0,0,0.15);
+}
+
+body.light-mode .apply-hero-subtitle {
+    color: rgba(30,30,30,0.8);
+    text-shadow: 0 1px 4px rgba(0,0,0,0.1);
+}
+
+/* ========== ПРЕИМУЩЕСТВА ========== */
+.apply-benefits-section {
+    padding: 80px 20px 60px;
+    background: var(--bg-dark);
+}
+
+.apply-benefits-grid {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 30px;
+}
+
+.apply-benefit-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    padding: 35px 25px 30px;
+    text-align: center;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.2);
+}
+
+.apply-benefit-card:hover {
+    transform: translateY(-6px);
+    border-color: var(--gold);
+    box-shadow: 0 18px 40px rgba(0,0,0,0.3);
+}
+
+.apply-benefit-icon {
+    width: 52px;
+    height: 52px;
+    margin: 0 auto 20px;
+    color: var(--copper);
+    transition: color 0.3s ease;
+}
+
+.apply-benefit-card:hover .apply-benefit-icon {
+    color: var(--gold);
+}
+
+.apply-benefit-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.apply-benefit-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--white);
+    margin-bottom: 12px;
+}
+
+.apply-benefit-text {
+    font-size: 0.85rem;
+    line-height: 1.55;
+    color: var(--text-gray);
+}
+
+/* ========== КНОПКА ЗАЯВКИ ========== */
+.apply-cta-section {
+    padding: 0 20px 100px;
+    background: var(--bg-dark);
+    text-align: center;
+}
+
+.apply-cta-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 14px;
+    padding: 20px 56px;
+    border: 2px solid var(--copper);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--white);
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.apply-cta-btn svg {
+    width: 22px;
+    height: 22px;
+    transition: transform 0.3s ease;
+}
+
+.apply-cta-btn:hover {
+    background: var(--copper);
+    border-color: var(--copper);
+    box-shadow: 0 12px 35px rgba(236,134,39,0.3);
+    transform: translateY(-3px);
+}
+
+.apply-cta-btn:hover svg {
+    transform: translateX(4px);
+}
+
+/* ========== МОДАЛЬНОЕ ОКНО ========== */
+.modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0,0,0,0.75);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: flex-start;
+    justify-content: center;
+    padding: 40px 20px;
+    overflow-y: auto;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.35s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.35s;
+}
+
+.modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.modal-container {
+    background: var(--card-bg);
+    border: 1px solid rgba(236,134,39,0.2);
+    border-radius: 8px;
+    width: 100%;
+    max-width: 680px;
+    margin: auto;
+    box-shadow: 0 25px 60px rgba(0,0,0,0.5);
+    transform: translateY(30px) scale(0.97);
+    transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modal-overlay.active .modal-container {
+    transform: translateY(0) scale(1);
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 30px 35px 20px;
+    border-bottom: 1px solid rgba(236,134,39,0.15);
+}
+
+.modal-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    font-weight: 700;
+    color: var(--gold);
+    margin: 0;
+}
+
+.modal-close {
+    width: 36px;
+    height: 36px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 50%;
+    background: none;
+    color: var(--text-gray);
+    font-size: 1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    color: var(--white);
+    border-color: var(--copper);
+    background: rgba(236,134,39,0.1);
+}
+
+.modal-body {
+    padding: 30px 35px 40px;
+}
+
+/* ========== ФОРМА ========== */
+.form-group {
+    margin-bottom: 22px;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+}
+
+.form-group-half {
+    flex: 1;
+    min-width: 0;
+}
+
+.form-label {
+    display: block;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: var(--text-gray);
+    margin-bottom: 8px;
+}
+
+.required {
+    color: var(--copper);
+}
+
+.form-input,
+.form-textarea {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 4px;
+    background: rgba(0,0,0,0.2);
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.form-input:focus,
+.form-textarea:focus {
+    border-color: var(--copper);
+    box-shadow: 0 0 0 3px rgba(236,134,39,0.08);
+}
+
+.form-input.error,
+.form-textarea.error {
+    border-color: #dc3545;
+    box-shadow: 0 0 0 3px rgba(220,53,69,0.08);
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+}
+
+.form-error {
+    display: none;
+    font-size: 0.75rem;
+    color: #dc3545;
+    margin-top: 5px;
+}
+
+.form-error.visible {
+    display: block;
+}
+
+/* Клятва */
+.form-oath {
+    padding: 18px 22px;
+    background: rgba(236,134,39,0.05);
+    border: 1px solid rgba(236,134,39,0.15);
+    border-radius: 4px;
+    font-family: 'Playfair Display', serif;
+    font-size: 0.9rem;
+    font-style: italic;
+    line-height: 1.7;
+    color: var(--text-gray);
+}
+
+.oath-name {
+    color: var(--copper);
+    font-style: normal;
+    transition: color 0.3s ease;
+}
+
+.oath-link {
+    color: var(--gold);
+    text-decoration: underline;
+    transition: color 0.3s ease;
+}
+
+.oath-link:hover {
+    color: var(--copper);
+}
+
+/* Чекбоксы */
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.form-checkbox {
+    position: absolute;
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.checkbox-custom {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 3px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.form-checkbox:checked + .checkbox-custom {
+    background: var(--copper);
+    border-color: var(--copper);
+}
+
+.form-checkbox:checked + .checkbox-custom::after {
+    content: '';
+    position: absolute;
+    left: 5px;
+    top: 2px;
+    width: 6px;
+    height: 10px;
+    border: solid #fff;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.checkbox-text {
+    font-size: 0.85rem;
+    color: var(--text-gray);
+    line-height: 1.4;
+}
+
+/* Кнопка отправки */
+.form-submit-btn {
+    width: 100%;
+    padding: 16px;
+    border: 2px solid var(--copper);
+    border-radius: 6px;
+    background: transparent;
+    color: var(--white);
+    cursor: pointer;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 1rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+    margin-top: 10px;
+}
+
+.form-submit-btn:hover {
+    background: var(--copper);
+    border-color: var(--copper);
+    box-shadow: 0 10px 30px rgba(236,134,39,0.25);
+}
+
+.form-submit-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.form-submit-btn.loading {
+    pointer-events: none;
+}
+
+.form-submit-btn.loading span {
+    opacity: 0;
+}
+
+.form-submit-btn.loading::after {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    border: 2px solid transparent;
+    border-top-color: currentColor;
+    border-radius: 50%;
+    animation: spin 0.7s linear infinite;
+}
+
+/* Успех */
+.form-success {
+    text-align: center;
+    padding: 20px 0;
+}
+
+.success-icon {
+    width: 70px;
+    height: 70px;
+    margin: 0 auto 20px;
+    color: #2ecc71;
+}
+
+.success-icon svg {
+    width: 100%;
+    height: 100%;
+}
+
+.success-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: var(--gold);
+    margin-bottom: 10px;
+}
+
+.success-text {
+    color: var(--text-gray);
+    margin-bottom: 30px;
+    line-height: 1.6;
+}
+
+/* ========== АДАПТИВНОСТЬ ========== */
+@media (max-width: 1024px) {
+    .apply-benefits-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+    
+    .apply-hero-title {
+        font-size: 2.8rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .apply-hero {
+        min-height: 40vh;
+    }
+    
+    .apply-hero-title {
+        font-size: 2rem;
+        letter-spacing: 2px;
+    }
+    
+    .apply-hero-subtitle {
+        font-size: 0.9rem;
+    }
+    
+    .apply-benefits-grid {
+        grid-template-columns: 1fr;
+        max-width: 450px;
+    }
+    
+    .form-row {
+        flex-direction: column;
+        gap: 0;
+    }
+    
+    .modal-container {
+        margin: 20px;
+        max-width: 100%;
+    }
+    
+    .modal-header {
+        padding: 20px 20px 15px;
+    }
+    
+    .modal-body {
+        padding: 20px 20px 30px;
+    }
+    
+    .modal-title {
+        font-size: 1.3rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .apply-hero-title {
+        font-size: 1.6rem;
+    }
+    
+    .apply-cta-btn {
+        padding: 16px 36px;
+        font-size: 0.95rem;
+    }
+}
