@@ -137,6 +137,18 @@ body.light-mode .program-hero-subtitle {
     box-shadow: 0 8px 25px rgba(0,0,0,0.2);
     position: relative;
     overflow: hidden;
+    animation: cardFadeInProgram 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+}
+.program-card:nth-child(1) { animation-delay: 0.05s; }
+.program-card:nth-child(2) { animation-delay: 0.1s; }
+.program-card:nth-child(3) { animation-delay: 0.15s; }
+.program-card:nth-child(4) { animation-delay: 0.2s; }
+.program-card:nth-child(5) { animation-delay: 0.25s; }
+.program-card:nth-child(6) { animation-delay: 0.3s; }
+@keyframes cardFadeInProgram {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
 }
 
 .program-card::before {
@@ -169,6 +181,11 @@ body.light-mode .program-hero-subtitle {
     margin-bottom: 25px;
     color: var(--copper);
     transition: transform 0.4s ease, color 0.4s ease;
+    animation: iconBounceInProgram 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+@keyframes iconBounceInProgram {
+    0% { opacity: 0; transform: scale(0) rotate(-180deg); }
+    100% { opacity: 1; transform: scale(1) rotate(0); }
 }
 
 .program-card:hover .program-card-icon {
@@ -205,6 +222,15 @@ body.light-mode .program-hero-subtitle {
     font-size: 0.95rem;
     line-height: 1.55;
     color: var(--text-gray);
+    animation: slideInProgramList 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    opacity: 0;
+}
+.program-card-list li:nth-child(1) { animation-delay: 0.1s; }
+.program-card-list li:nth-child(2) { animation-delay: 0.15s; }
+.program-card-list li:nth-child(3) { animation-delay: 0.2s; }
+@keyframes slideInProgramList {
+    from { opacity: 0; transform: translateX(-10px); }
+    to { opacity: 1; transform: translateX(0); }
 }
 
 .program-card-list li::before {
