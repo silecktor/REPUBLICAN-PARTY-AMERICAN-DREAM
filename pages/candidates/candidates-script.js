@@ -39,9 +39,8 @@ async function loadCandidates() {
     
     if (!governorSection || !ministersGrid) return;
 
-    // Индикатор загрузки
-    governorSection.innerHTML = '<div class="loading-indicator" style="text-align:center;padding:40px;">Загрузка кандидатов...</div>';
-    ministersGrid.innerHTML = '<div class="loading-indicator" style="text-align:center;padding:40px;grid-column:1/-1;">Загрузка министров...</div>';
+    // Показываем скелетоны
+    showSkeletons(governorSection, ministersGrid);
 
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
@@ -80,16 +79,25 @@ async function loadCandidates() {
             return;
         }
 
-        // Разделяем: губернатор отдельно, министры — в сетку
+        // Разделяем: губернатор, вице-губернатор, министры
         const governor = activeCandidates.find(c => c.tier === 'governor');
-        const ministers = activeCandidates.filter(c => c.tier !== 'governor');
+        const viceGovernor = activeCandidates.find(c => c.tier === 'vice-governor');
+        const ministers = activeCandidates.filter(c => c.tier !== 'governor' && c.tier !== 'vice-governor');
 
         // Рендерим губернатора
+        governorSection.innerHTML = '';
         if (governor) {
-            governorSection.innerHTML = '';
             governorSection.appendChild(createGovernorCard(governor));
-        } else {
-            governorSection.innerHTML = '';
+        }
+
+        // Рендерим вице-губернатора (если есть)
+        let viceSection = document.getElementById('vice-governor-section');
+        if (viceGovernor && viceSection) {
+            viceSection.innerHTML = '';
+            viceSection.appendChild(createViceGovernorCard(viceGovernor));
+            viceSection.style.display = 'block';
+        } else if (viceSection) {
+            viceSection.style.display = 'none';
         }
 
         // Рендерим министров
@@ -99,10 +107,8 @@ async function loadCandidates() {
                 ministersGrid.appendChild(createMinisterCard(minister));
             });
             
-            // Убираем все классы центрирования
             ministersGrid.classList.remove('few-items', 'one-item', 'two-items');
             
-            // Если меньше 3 карточек — добавляем нужный класс
             if (ministers.length === 1) {
                 ministersGrid.classList.add('few-items', 'one-item');
             } else if (ministers.length === 2) {
@@ -124,18 +130,46 @@ async function loadCandidates() {
             counterElement.textContent = '—';
         }
         
-        if (governorSection) {
-            governorSection.innerHTML = '';
-        }
-        if (ministersGrid) {
-            ministersGrid.innerHTML = `
-                <div class="no-candidates" style="grid-column:1/-1;">
-                    <h3>Ошибка загрузки</h3>
-                    <p>Не удалось загрузить данные кандидатов. Пожалуйста, попробуйте позже.</p>
-                </div>
-            `;
-        }
+        governorSection.innerHTML = '';
+        const viceSection = document.getElementById('vice-governor-section');
+        if (viceSection) viceSection.remove();
+        ministersGrid.innerHTML = `
+            <div class="no-candidates" style="grid-column:1/-1;">
+                <h3>Ошибка загрузки</h3>
+                <p>Не удалось загрузить данные кандидатов. Пожалуйста, попробуйте позже.</p>
+            </div>
+        `;
     }
+}
+
+// ========== СКЕЛЕТОНЫ ==========
+function showSkeletons(governorSection, ministersGrid) {
+    // Скелетон для губернатора
+    governorSection.innerHTML = `
+        <div class="skeleton-governor">
+            <div class="skeleton-avatar-large"></div>
+            <div class="skeleton-info">
+                <div class="skeleton-line long"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line long"></div>
+            </div>
+        </div>
+    `;
+    
+    // Скелетоны для министров (3 штуки)
+    let skeletonsHtml = '';
+    for (let i = 0; i < 3; i++) {
+        skeletonsHtml += `
+            <div class="skeleton-card">
+                <div class="skeleton-avatar"></div>
+                <div class="skeleton-line short"></div>
+                <div class="skeleton-line"></div>
+                <div class="skeleton-line long"></div>
+            </div>
+        `;
+    }
+    ministersGrid.innerHTML = skeletonsHtml;
 }
 
 // ========== ИКОНКИ ДОЛЖНОСТЕЙ ==========
@@ -143,7 +177,6 @@ function getMinisterIcon(role) {
     const roleLower = role.toLowerCase();
     
     if (roleLower.includes('прокурор') || roleLower.includes('юстиц')) {
-        // Весы правосудия
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="2" x2="12" y2="6"></line>
             <line x1="12" y1="6" x2="9" y2="10"></line>
@@ -157,7 +190,6 @@ function getMinisterIcon(role) {
     }
     
     if (roleLower.includes('финанс')) {
-        // Знак доллара в круге
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
             <path d="M12 6v12"></path>
@@ -166,14 +198,12 @@ function getMinisterIcon(role) {
     }
     
     if (roleLower.includes('оборон')) {
-        // Звезда
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
         </svg>`;
     }
     
     if (roleLower.includes('безопасн')) {
-        // Щит с галочкой
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             <path d="M9 12l2 2 4-4"></path>
@@ -181,7 +211,6 @@ function getMinisterIcon(role) {
     }
     
     if (roleLower.includes('культур')) {
-        // Книга
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
             <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
@@ -191,7 +220,6 @@ function getMinisterIcon(role) {
     }
     
     if (roleLower.includes('здравоохран') || roleLower.includes('здоров')) {
-        // Медицинский крест
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="2" width="20" height="20" rx="4"></rect>
             <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -200,7 +228,6 @@ function getMinisterIcon(role) {
     }
     
     if (roleLower.includes('адвокат') || roleLower.includes('коллег')) {
-        // Молоток судьи
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M5 9l-3 3 2 2 8-8-2-2-3 3"></path>
             <rect x="10" y="14" width="8" height="3" rx="1"></rect>
@@ -209,7 +236,6 @@ function getMinisterIcon(role) {
     }
     
     if (roleLower.includes('вице') || roleLower.includes('губернатор') && !roleLower.includes('кандидат')) {
-        // Здание правительства
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 21h18"></path>
             <path d="M5 21V7l8-4v18"></path>
@@ -221,7 +247,6 @@ function getMinisterIcon(role) {
         </svg>`;
     }
     
-    // Иконка по умолчанию — портфель министра
     return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="7" width="20" height="14" rx="2"></rect>
         <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
@@ -230,20 +255,20 @@ function getMinisterIcon(role) {
     </svg>`;
 }
 
-// ========== КАРТОЧКА ГУБЕРНАТОРА ==========
+// ========== КАРТОЧКА ГУБЕРНАТОРА (с единым default-avatar) ==========
 function createGovernorCard(governor) {
     const card = document.createElement('div');
     card.className = 'governor-card';
     
-    const photoSrc = governor.photo ? governor.photo : '';
-    const photoHTML = photoSrc 
-        ? `<div class="governor-photo-wrapper"><img src="${photoSrc}" alt="${escapeHTML(governor.name)}" loading="lazy"></div>`
-        : `<div class="governor-photo-wrapper"><div class="default-avatar">
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="32" cy="20" r="12" stroke="currentColor" stroke-width="2.5"/>
-                <path d="M12 52C12 40 20.5 30 32 30C43.5 30 52 40 52 52" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-        </div></div>`;
+    const photoSrc = governor.photo && governor.photo.trim() !== '' ? governor.photo : null;
+    const defaultAvatarPath = '../../assets/images/default-avatar.png';
+    
+    let photoHTML = '';
+    if (photoSrc) {
+        photoHTML = `<div class="governor-photo-wrapper"><img src="${photoSrc}" alt="${escapeHTML(governor.name)}" loading="lazy"></div>`;
+    } else {
+        photoHTML = `<div class="governor-photo-wrapper"><img src="${defaultAvatarPath}" alt="${escapeHTML(governor.name)}" class="default-avatar-img" loading="lazy"></div>`;
+    }
     
     card.innerHTML = `
         <div class="governor-photo">
@@ -260,20 +285,50 @@ function createGovernorCard(governor) {
     return card;
 }
 
-// ========== КАРТОЧКА МИНИСТРА ==========
+// ========== КАРТОЧКА ВИЦЕ-ГУБЕРНАТОРА ==========
+function createViceGovernorCard(vice) {
+    const card = document.createElement('div');
+    card.className = 'vice-governor-card';
+    
+    const photoSrc = vice.photo && vice.photo.trim() !== '' ? vice.photo : null;
+    const defaultAvatarPath = '../../assets/images/default-avatar.png';
+    
+    let photoHTML = '';
+    if (photoSrc) {
+        photoHTML = `<img src="${photoSrc}" alt="${escapeHTML(vice.name)}" loading="lazy">`;
+    } else {
+        photoHTML = `<img src="${defaultAvatarPath}" alt="${escapeHTML(vice.name)}" class="default-avatar-img" loading="lazy">`;
+    }
+    
+    card.innerHTML = `
+        <div class="vice-governor-photo">
+            ${photoHTML}
+        </div>
+        <div class="vice-governor-info">
+            <span class="vice-governor-badge">Вице-губернатор</span>
+            <h3 class="vice-governor-name">${escapeHTML(vice.name)}</h3>
+            <blockquote class="vice-governor-quote">${escapeHTML(vice.quote)}</blockquote>
+            <p class="vice-governor-bio">${escapeHTML(vice.bio)}</p>
+        </div>
+    `;
+    
+    return card;
+}
+
+// ========== КАРТОЧКА МИНИСТРА (с единым default-avatar) ==========
 function createMinisterCard(minister) {
     const card = document.createElement('div');
     card.className = 'minister-card';
     
-    const photoSrc = minister.photo ? minister.photo : '';
-    const photoHTML = photoSrc
-        ? `<img src="${photoSrc}" alt="${escapeHTML(minister.name)}" class="minister-photo" loading="lazy">`
-        : `<div class="minister-photo-placeholder">
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="32" cy="22" r="10" stroke="currentColor" stroke-width="2.5"/>
-                <path d="M14 52C14 42 20.5 34 32 34C43.5 34 50 42 50 52" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
-            </svg>
-        </div>`;
+    const photoSrc = minister.photo && minister.photo.trim() !== '' ? minister.photo : null;
+    const defaultAvatarPath = '../../assets/images/default-avatar.png';
+    
+    let photoHTML = '';
+    if (photoSrc) {
+        photoHTML = `<img src="${photoSrc}" alt="${escapeHTML(minister.name)}" class="minister-photo" loading="lazy">`;
+    } else {
+        photoHTML = `<img src="${defaultAvatarPath}" alt="${escapeHTML(minister.name)}" class="minister-default-avatar" loading="lazy">`;
+    }
     
     const iconHTML = getMinisterIcon(minister.role);
     
@@ -295,4 +350,4 @@ function escapeHTML(str) {
     const div = document.createElement('div');
     div.textContent = str;
     return div.innerHTML;
-}   
+}
