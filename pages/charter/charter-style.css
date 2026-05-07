@@ -642,6 +642,63 @@ body.light-mode .article-text {
     transform: translateY(-2px);
 }
 
+/* ========== МЕНЮ ТРИ ТОЧКИ ========== */
+.dots-menu-btn {
+    background: transparent;
+    border: 1px solid var(--copper);
+    border-radius: 4px;
+    color: var(--copper);
+    font-size: 1.5rem;
+    font-weight: bold;
+    cursor: pointer;
+    padding: 5px 12px;
+    transition: all 0.3s ease;
+    line-height: 1;
+}
+.dots-menu-btn:hover {
+    background: var(--copper);
+    color: var(--white);
+}
+.dots-menu {
+    position: fixed;
+    background: var(--card-bg);
+    border: 1px solid var(--copper);
+    border-radius: 6px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+    z-index: 1000;
+    min-width: 180px;
+    overflow: hidden;
+}
+.dots-menu.hidden {
+    display: none;
+}
+.dots-menu button {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    background: transparent;
+    border: none;
+    text-align: left;
+    color: var(--white);
+    font-family: 'Montserrat', sans-serif;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.dots-menu button:hover {
+    background: rgba(236,134,39,0.15);
+}
+body.light-mode .dots-menu {
+    background: var(--card-bg);
+    border-color: var(--copper);
+}
+body.light-mode .dots-menu button {
+    color: var(--white);
+}
+body.light-mode .dots-menu button:hover {
+    background: rgba(236,134,39,0.1);
+}
+
 /* ========== АДАПТИВНОСТЬ ========== */
 @media (max-width: 900px) {
     .charter-title {

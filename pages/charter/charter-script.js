@@ -4,7 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 async function initCharterPage() {
     initScrollAnimations();
-    initPrintButton();
+    initPrintPdfMenu();     
     await loadCharter();
 }
 
@@ -25,21 +25,107 @@ function initScrollAnimations() {
     });
 }
 
-function initPrintButton() {
-    const printBtn = document.getElementById('print-btn');
-    if (!printBtn) return;
-    printBtn.addEventListener('click', () => {
-        const allChapters = document.querySelectorAll('.chapter-block');
-        allChapters.forEach(chapter => chapter.classList.add('open'));
-        setTimeout(() => {
-            window.print();
-            const singleMode = document.getElementById('single-mode-toggle');
-            if (singleMode && singleMode.checked) {
-                allChapters.forEach((chapter, index) => {
-                    if (index !== 0) chapter.classList.remove('open');
-                });
-            }
-        }, 200);
+//  меню с тремя точками 
+function initPrintPdfMenu() {
+    const container = document.querySelector('.charter-controls-inner');
+    if (!container) return;
+    
+    // Удаляем старую кнопку печати, если есть
+    const oldBtn = document.getElementById('print-btn');
+    if (oldBtn) oldBtn.remove();
+    
+    // Создаём кнопку с тремя точками
+    const dotsBtn = document.createElement('button');
+    dotsBtn.id = 'dots-menu-btn';
+    dotsBtn.className = 'dots-menu-btn';
+    dotsBtn.innerHTML = '⋮';
+    dotsBtn.setAttribute('aria-label', 'Меню');
+    container.appendChild(dotsBtn);
+    
+    // Создаём выпадающее меню
+    const menu = document.createElement('div');
+    menu.id = 'dots-menu';
+    menu.className = 'dots-menu hidden';
+    menu.innerHTML = `
+        <button id="print-pdf-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M6 9V2h12v7M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                <path d="M6 14h12v8H6v-8z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Распечатать PDF</span>
+        </button>
+        <button id="download-pdf-btn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+            <span>Скачать PDF</span>
+        </button>
+    `;
+    document.body.appendChild(menu);
+    
+    // Позиционирование меню под кнопкой
+    function positionMenu() {
+        const rect = dotsBtn.getBoundingClientRect();
+        menu.style.top = rect.bottom + 5 + 'px';
+        menu.style.right = window.innerWidth - rect.right + 'px';
+    }
+    
+    // Открыть/закрыть меню
+    dotsBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        const isHidden = menu.classList.contains('hidden');
+        document.querySelectorAll('.dots-menu').forEach(m => m.classList.add('hidden'));
+        if (isHidden) {
+            positionMenu();
+            menu.classList.remove('hidden');
+        } else {
+            menu.classList.add('hidden');
+        }
+    });
+    
+    // Закрыть при клике вне
+    document.addEventListener('click', (e) => {
+        if (!menu.contains(e.target) && e.target !== dotsBtn) {
+            menu.classList.add('hidden');
+        }
+    });
+    window.addEventListener('resize', () => {
+        if (!menu.classList.contains('hidden')) positionMenu();
+    });
+    
+    // Распечатать PDF
+    const printPdfBtn = document.getElementById('print-pdf-btn');
+    printPdfBtn.addEventListener('click', () => {
+        const pdfUrl = '../../assets/documents/charter.pdf';
+        const iframe = document.createElement('iframe');
+        iframe.style.position = 'absolute';
+        iframe.style.width = '0';
+        iframe.style.height = '0';
+        iframe.style.border = 'none';
+        document.body.appendChild(iframe);
+        iframe.src = pdfUrl;
+        iframe.onload = () => {
+            setTimeout(() => {
+                iframe.contentWindow.print();
+                setTimeout(() => {
+                    document.body.removeChild(iframe);
+                }, 1000);
+            }, 500);
+        };
+        menu.classList.add('hidden');
+    });
+    
+    // Скачать PDF
+    const downloadPdfBtn = document.getElementById('download-pdf-btn');
+    downloadPdfBtn.addEventListener('click', () => {
+        const pdfUrl = '../../assets/documents/charter.pdf';
+        const link = document.createElement('a');
+        link.href = pdfUrl;
+        link.download = 'Ustav_American_Dream.pdf';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        menu.classList.add('hidden');
     });
 }
 
@@ -80,13 +166,16 @@ async function loadCharter() {
     }
 }
 
+// ИЗМЕНЕНО: добавлены ID для каждой главы (для якорей поиска)
 function renderChapters(container, chapters) {
     container.innerHTML = '';
     const wrapper = document.createElement('div');
     wrapper.className = 'chapters-wrapper';
     chapters.forEach((chapter, chapterIndex) => {
+        const chapterId = `chapter-${chapterIndex + 1}`;
         const block = document.createElement('div');
         block.className = 'chapter-block';
+        block.id = chapterId;   // НОВОЕ: ID для якоря
         if (chapterIndex === 0) block.classList.add('open');
         const header = document.createElement('div');
         header.className = 'chapter-header';
@@ -95,9 +184,11 @@ function renderChapters(container, chapters) {
         body.className = 'chapter-body';
         const bodyInner = document.createElement('div');
         bodyInner.className = 'chapter-body-inner';
-        chapter.articles.forEach(article => {
+        chapter.articles.forEach((article, artIdx) => {
+            const articleId = `${chapterId}-article-${artIdx + 1}`;
             const articleBlock = document.createElement('div');
             articleBlock.className = 'article-block';
+            articleBlock.id = articleId;   // НОВОЕ: ID для якоря
             articleBlock.innerHTML = `<div class="article-header"><span class="article-number">${escapeHTML(article.number)}</span>${article.title ? `<span class="article-title">${escapeHTML(article.title)}</span>` : ''}</div><p class="article-text">${escapeHTML(article.text)}</p>`;
             bodyInner.appendChild(articleBlock);
         });
