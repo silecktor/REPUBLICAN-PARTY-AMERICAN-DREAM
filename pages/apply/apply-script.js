@@ -252,23 +252,21 @@ async function sendToDiscord(data) {
             {
                 name: '📋 Техническая информация',
                 value: [
-                    `**Номер заявки:** ${appNumber}`,
-                    `**Дата подачи:** ${dateTime}`,
-                    `**Статус:** Ожидает рассмотрения`,
-                    `**IP заявителя:** скрыт`
+                    `-# **Номер заявки:** ${appNumber}`,
+                    `-# **Дата подачи:** ${dateTime}`,
                 ].join('\n'),
                 inline: false
             }
         ],
         footer: {
             text: 'Republican Party «American Dream» • Сан-Андреас',
-            icon_url: 'https://i.imgur.com/logo-placeholder.png'
+            icon_url: 'https://media.discordapp.net/attachments/1501242595613999114/1501242702832865443/logo.png?ex=69fd56f8&is=69fc0578&hm=418d8b0402c9b4909f9ea519005807584d7a02ba0138357aee3c5105d9ff8716&=&format=webp&quality=lossless&width=944&height=833'
         }
     };
     
     const payload = {
         username: 'American Dream | Приёмная',
-        avatar_url: 'https://i.imgur.com/logo-placeholder.png',
+        avatar_url: 'https://media.discordapp.net/attachments/1501242595613999114/1501242702832865443/logo.png?ex=69fd56f8&is=69fc0578&hm=418d8b0402c9b4909f9ea519005807584d7a02ba0138357aee3c5105d9ff8716&=&format=webp&quality=lossless&width=944&height=833',
         embeds: [embed]
     };
     
