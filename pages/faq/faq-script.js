@@ -103,7 +103,7 @@ function renderFaqAccordion(container, faqData) {
         const answer = escapeHTML(item.answer);
         
         html += `
-            <div class="faq-item" data-id="${item.id}">
+            <div class="faq-item open" data-id="${item.id}">
                 <div class="faq-question">
                     <span class="faq-question-text">${question}</span>
                     <svg class="faq-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
