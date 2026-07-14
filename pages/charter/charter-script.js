@@ -166,7 +166,7 @@ async function loadCharter() {
     }
 }
 
-// ИЗМЕНЕНО: добавлены ID для каждой главы (для якорей поиска)
+// ИЗМЕНЕНО: все главы открыты по умолчанию
 function renderChapters(container, chapters) {
     container.innerHTML = '';
     const wrapper = document.createElement('div');
@@ -175,8 +175,10 @@ function renderChapters(container, chapters) {
         const chapterId = `chapter-${chapterIndex + 1}`;
         const block = document.createElement('div');
         block.className = 'chapter-block';
-        block.id = chapterId;   // НОВОЕ: ID для якоря
-        if (chapterIndex === 0) block.classList.add('open');
+        block.id = chapterId;
+        // ВСЕ ГЛАВЫ ОТКРЫТЫ ПО УМОЛЧАНИЮ
+        block.classList.add('open');
+        
         const header = document.createElement('div');
         header.className = 'chapter-header';
         header.innerHTML = `<span class="chapter-header-text">${escapeHTML(chapter.number)}. ${escapeHTML(chapter.title)}</span><svg class="chapter-arrow" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>`;
@@ -188,7 +190,7 @@ function renderChapters(container, chapters) {
             const articleId = `${chapterId}-article-${artIdx + 1}`;
             const articleBlock = document.createElement('div');
             articleBlock.className = 'article-block';
-            articleBlock.id = articleId;   // НОВОЕ: ID для якоря
+            articleBlock.id = articleId;
             articleBlock.innerHTML = `<div class="article-header"><span class="article-number">${escapeHTML(article.number)}</span>${article.title ? `<span class="article-title">${escapeHTML(article.title)}</span>` : ''}</div><p class="article-text">${escapeHTML(article.text)}</p>`;
             bodyInner.appendChild(articleBlock);
         });
