@@ -176,6 +176,59 @@ function showSkeletons(governorSection, ministersGrid) {
 function getMinisterIcon(role) {
     const roleLower = role.toLowerCase();
     
+    // Глава коллегии адвокатов
+    if (roleLower.includes('коллегия') || roleLower.includes('коллег') || roleLower.includes('адвокат') || roleLower.includes('юрист') || roleLower.includes('bar association')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <path d="M8 4V2h8v2"></path>
+            <path d="M8 12h8"></path>
+            <path d="M8 16h6"></path>
+            <path d="M12 8v8"></path>
+            <path d="M4 20l3-3"></path>
+            <path d="M20 20l-3-3"></path>
+        </svg>`;
+    }
+    
+    // Глава аппарата губернатора
+    if (roleLower.includes('аппарат') || roleLower.includes('chief of staff') || roleLower.includes('глава аппарата') || roleLower.includes('руководитель аппарата')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M3 21h18"></path>
+            <path d="M5 21V7l8-4v18"></path>
+            <path d="M19 21V11l-6-3"></path>
+            <line x1="9" y1="9" x2="9" y2="9.01"></line>
+            <line x1="9" y1="12" x2="9" y2="12.01"></line>
+            <line x1="9" y1="15" x2="9" y2="15.01"></line>
+            <line x1="9" y1="18" x2="9" y2="18.01"></line>
+            <path d="M15 11v10"></path>
+        </svg>`;
+    }
+    
+    // Мэр Лос-Сантос
+    if (roleLower.includes('лос-сантос') || (roleLower.includes('мэр') && roleLower.includes('сантос')) || roleLower.includes('los santos')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+            <line x1="12" y1="22" x2="12" y2="17"></line>
+            <circle cx="12" cy="12" r="2"></circle>
+            <path d="M8 12c0-2 2-3 4-3s4 1 4 3"></path>
+        </svg>`;
+    }
+    
+    // Мэр Блейна
+    if (roleLower.includes('блейн') || (roleLower.includes('мэр') && roleLower.includes('блейн')) || roleLower.includes('blaine')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+            <path d="M2 17l10 5 10-5"></path>
+            <path d="M2 12l10 5 10-5"></path>
+            <line x1="12" y1="22" x2="12" y2="17"></line>
+            <circle cx="12" cy="12" r="2"></circle>
+            <path d="M8 14c0-3 2-4 4-4s4 1 4 4"></path>
+            <path d="M6 18c0-4 3-6 6-6s6 2 6 6"></path>
+        </svg>`;
+    }
+    
+    // Прокурор / Юстиция
     if (roleLower.includes('прокурор') || roleLower.includes('юстиц')) {
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <line x1="12" y1="2" x2="12" y2="6"></line>
@@ -189,6 +242,7 @@ function getMinisterIcon(role) {
         </svg>`;
     }
     
+    // Финансы
     if (roleLower.includes('финанс')) {
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <circle cx="12" cy="12" r="10"></circle>
@@ -197,19 +251,22 @@ function getMinisterIcon(role) {
         </svg>`;
     }
     
+    // Оборона
     if (roleLower.includes('оборон')) {
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round">
             <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
         </svg>`;
     }
     
-    if (roleLower.includes('безопасн')) {
+    // Безопасность
+    if (roleLower.includes('безопасн') || roleLower.includes('sheriff') || roleLower.includes('шериф')) {
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
             <path d="M9 12l2 2 4-4"></path>
         </svg>`;
     }
     
+    // Культура
     if (roleLower.includes('культур')) {
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
@@ -219,7 +276,8 @@ function getMinisterIcon(role) {
         </svg>`;
     }
     
-    if (roleLower.includes('здравоохран') || roleLower.includes('здоров')) {
+    // Здравоохранение
+    if (roleLower.includes('здравоохран') || roleLower.includes('здоров') || roleLower.includes('медицин')) {
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <rect x="2" y="2" width="20" height="20" rx="4"></rect>
             <line x1="12" y1="8" x2="12" y2="16"></line>
@@ -227,14 +285,7 @@ function getMinisterIcon(role) {
         </svg>`;
     }
     
-    if (roleLower.includes('адвокат') || roleLower.includes('коллег')) {
-        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 9l-3 3 2 2 8-8-2-2-3 3"></path>
-            <rect x="10" y="14" width="8" height="3" rx="1"></rect>
-            <line x1="10" y1="17" x2="18" y2="17"></line>
-        </svg>`;
-    }
-    
+    // Вице-губернатор (на случай если попадёт сюда)
     if (roleLower.includes('вице') || roleLower.includes('губернатор') && !roleLower.includes('кандидат')) {
         return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M3 21h18"></path>
@@ -247,6 +298,25 @@ function getMinisterIcon(role) {
         </svg>`;
     }
     
+    // Транспорт / Инфраструктура
+    if (roleLower.includes('транспорт') || roleLower.includes('инфраструктур') || roleLower.includes('дорог')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="1" y="3" width="15" height="13" rx="2"></rect>
+            <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+            <circle cx="5.5" cy="18" r="2.5"></circle>
+            <circle cx="18.5" cy="18" r="2.5"></circle>
+            <line x1="12" y1="8" x2="12" y2="16"></line>
+        </svg>`;
+    }
+    
+    // Образование
+    if (roleLower.includes('образован') || roleLower.includes('школ') || roleLower.includes('университет')) {
+        return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+        </svg>`;
+    }
+    
+    // Дефолтная иконка (для всех остальных)
     return `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="7" width="20" height="14" rx="2"></rect>
         <path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"></path>
